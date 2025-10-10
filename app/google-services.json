@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "826979265425",
+    "firebase_url": "https://gundam-shop-mobile-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "gundam-shop-mobile",
+    "storage_bucket": "gundam-shop-mobile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:826979265425:android:8eaad91f1e79fdc9698830",
+        "android_client_info": {
+          "package_name": "com.huyntd.superapp.gundamshopmobilefe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "826979265425-0cjm35bbkjol27ft5svp7tqcd88ar95b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe7uQujqioC93wBmKJaxqXotQUbtCMmLs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "826979265425-0cjm35bbkjol27ft5svp7tqcd88ar95b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
