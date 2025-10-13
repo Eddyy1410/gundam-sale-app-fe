@@ -1,14 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.gms.google.services)
+//    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
-    namespace = "com.huyntd.superapp.gundamshopmobilefe"
+    namespace = "com.huyntd.superapp.gundamshop_mobilefe"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.huyntd.superapp.gundamshopmobilefe"
+        applicationId = "com.huyntd.superapp.gundamshop_mobilefe"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -44,9 +44,10 @@ dependencies {
     implementation(libs.constraintlayout)
 
     //Firebase
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.database)
+//    implementation(libs.firebase.analytics)
+//    implementation(libs.firebase.auth)
+//    implementation(libs.firebase.database)
+    //   Là 1 thư viện SDK để giao tiếp với google play service để lấy id-token phía android user
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Nhớ chuyển sang android mode thêm permission INTERNET

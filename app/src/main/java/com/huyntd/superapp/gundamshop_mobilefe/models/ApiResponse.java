@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.models;
+package com.huyntd.superapp.gundamshop_mobilefe.models;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

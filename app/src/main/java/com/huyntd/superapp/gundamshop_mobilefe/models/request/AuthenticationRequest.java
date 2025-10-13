@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.models.request;
+package com.huyntd.superapp.gundamshop_mobilefe.models.request;
 
 import com.google.gson.annotations.SerializedName;
 

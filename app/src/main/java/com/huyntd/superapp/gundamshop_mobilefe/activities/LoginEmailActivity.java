@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.activities;
+package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,20 +6,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.auth.api.Auth;
-import com.huyntd.superapp.gundamshopmobilefe.R;
-import com.huyntd.superapp.gundamshopmobilefe.SessionManager;
-import com.huyntd.superapp.gundamshopmobilefe.api.ApiService;
-import com.huyntd.superapp.gundamshopmobilefe.databinding.ActivityLoginEmailBinding;
-import com.huyntd.superapp.gundamshopmobilefe.models.ApiResponse;
-import com.huyntd.superapp.gundamshopmobilefe.models.request.AuthenticationRequest;
-import com.huyntd.superapp.gundamshopmobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
+import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityLoginEmailBinding;
+import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,6 +53,7 @@ public class LoginEmailActivity extends AppCompatActivity {
                         Log.i(TAG, "onResponse: "+response.body().toString());
                         SessionManager.getInstance(LoginEmailActivity.this).saveAuthToken(response.body().getResult().getToken());
                         Toast.makeText(LoginEmailActivity.this, SessionManager.getInstance(LoginEmailActivity.this).getAuthToken(), Toast.LENGTH_SHORT).show();
+                        startMainActivity();
                     }
 
                     @Override
@@ -69,10 +65,25 @@ public class LoginEmailActivity extends AppCompatActivity {
             }
         });
 
+        binding.noAccountTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRegisterEmailActivity();
+            }
+        });
+
     }
 
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
+    }
+
+    private void startMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void startRegisterEmailActivity() {
+        startActivity(new Intent(this, RegisterEmailActivity.class));
     }
 
 }

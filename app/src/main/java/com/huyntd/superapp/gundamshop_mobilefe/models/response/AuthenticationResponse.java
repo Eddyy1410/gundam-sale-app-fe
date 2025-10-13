@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.models.response;
+package com.huyntd.superapp.gundamshop_mobilefe.models.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

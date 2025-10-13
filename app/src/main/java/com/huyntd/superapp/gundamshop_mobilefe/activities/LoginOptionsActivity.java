@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.activities;
+package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,12 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -28,19 +22,26 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.huyntd.superapp.gundamshopmobilefe.MyUtils;
-import com.huyntd.superapp.gundamshopmobilefe.R;
-import com.huyntd.superapp.gundamshopmobilefe.databinding.ActivityLoginOptionsBinding;
-
-import org.json.JSONObject;
+//import com.google.firebase.auth.AuthCredential;
+//import com.google.firebase.auth.AuthResult;
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.GoogleAuthProvider;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+import com.huyntd.superapp.gundamshop_mobilefe.MyUtils;
+import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
+import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityLoginOptionsBinding;
+import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LoginOptionsActivity extends AppCompatActivity {
@@ -52,8 +53,8 @@ public class LoginOptionsActivity extends AppCompatActivity {
     //ProgressDialog to show while google sign in
     private ProgressDialog progressDialog;
 
-    //Firebase Auth for auth related tasks
-    private FirebaseAuth firebaseAuth;
+//    //Firebase Auth for auth related tasks
+//    private FirebaseAuth firebaseAuth;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -68,10 +69,12 @@ public class LoginOptionsActivity extends AppCompatActivity {
         progressDialog.setTitle("Please wait...");
         progressDialog.setCanceledOnTouchOutside(false);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+//        firebaseAuth = FirebaseAuth.getInstance();
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                // default_web_client_id này phải đặt đúng với client-id của web user phía backend
+                // setup trong res/values/strings.xml
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -101,13 +104,16 @@ public class LoginOptionsActivity extends AppCompatActivity {
 
     }
 
+    private void startMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
     private void startLoginEmailActivity() {
         startActivity(new Intent(this, LoginEmailActivity.class));
     }
 
     private void beginGoogleLogin() {
         Log.d(TAG, "beginGoogleLogin: ");
-
         Intent googleSignInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInARL.launch(googleSignInIntent);
     }
@@ -117,7 +123,7 @@ public class LoginOptionsActivity extends AppCompatActivity {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    Log.d(TAG, "onActivityResult: ");
+                    Log.d(TAG, "onActivityResult: "+result.getResultCode());
                     // handle google signIn result here
                     if (result.getResultCode() == LoginOptionsActivity.RESULT_OK) {
 
@@ -130,8 +136,25 @@ public class LoginOptionsActivity extends AppCompatActivity {
                             // Google signIn was successful, authenticate with Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             Log.d(TAG, "onActivityResult: AccountID: "+account.getId());
-                            Log.i(TAG, "onActivityResult: "+account.get);
-//                            firebaseAuthWithGoogleAccount(account.getIdToken());
+
+                            ApiService.apiService.loginGoogle(GoogleTokenRequest.builder()
+                                    .idToken(account.getIdToken())
+                                    .build()).enqueue(new Callback<ApiResponse<AuthenticationResponse>>() {
+                                @Override
+                                public void onResponse(Call<ApiResponse<AuthenticationResponse>> call, Response<ApiResponse<AuthenticationResponse>> response) {
+                                    Log.i(TAG, "onResponse: "+response.body().toString());
+                                    SessionManager.getInstance(LoginOptionsActivity.this).saveAuthToken(response.body().getResult().getToken());
+                                    Toast.makeText(LoginOptionsActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                                    startMainActivity();
+                                }
+
+                                @Override
+                                public void onFailure(Call<ApiResponse<AuthenticationResponse>> call, Throwable t) {
+                                    Toast.makeText(LoginOptionsActivity.this, "error occured!", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "onFailure: ", t);
+                                }
+                            });
+
                         } catch (Exception e) {
                             Log.e(TAG, "onActivityResult: ", e);
                         }
@@ -144,81 +167,81 @@ public class LoginOptionsActivity extends AppCompatActivity {
             }
     );
 
-    private void firebaseAuthWithGoogleAccount(String idToken) {
-        Log.d(TAG, "firebaseAuthWithGoogleAccount: idToken: "+idToken);
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-
-        firebaseAuth.signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // SignIn success, let's check if the user is new (New Account Register) or existing (Existing Login)
-                        if (authResult.getAdditionalUserInfo().isNewUser()) {
-                            Log.d(TAG, "onSuccess: Account Created...!");
-                            // New User, Account created. Let's save user info to Firebase realtime database
-                            updateUserInfoDB();
-                        } else {
-                            Log.d(TAG, "onSuccess: Logged In...!");
-                            // Existing User. No need to save user info to Firebase realtime database, Start MainActivity
-                            startActivity(new Intent(LoginOptionsActivity.this, MainActivity.class));
-                            finishAffinity();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: ", e);
-                    }
-                });
-    }
-
-    private void updateUserInfoDB() {
-        Log.d(TAG, "updateUserInfoDB: ");
-
-        // set message and show progress dialog
-        progressDialog.setMessage("Saving user info...!");
-        progressDialog.show();
-
-        // get current timestamp e.g. to show user registration date/time
-        long timestamp = MyUtils.timestamp();
-        String registeredUserUid = firebaseAuth.getUid();
-        String registeredUserEmail = firebaseAuth.getCurrentUser().getEmail();
-        String name = firebaseAuth.getCurrentUser().getDisplayName();
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("uid", registeredUserUid);
-        hashMap.put("email", registeredUserEmail);
-        hashMap.put("name", name);
-        hashMap.put("timestamp", timestamp);
-        hashMap.put("phoneCode", "");
-        hashMap.put("phoneNumber", "");
-        hashMap.put("profileImageUrl", "");
-        hashMap.put("dob", "");
-        hashMap.put("userType", MyUtils.USER_TYPE_GOOGLE);
-        hashMap.put("token", "");
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-        ref.child(registeredUserUid)
-                .setValue(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "onSuccess: User info saved...!");
-                        progressDialog.dismiss();
-                        startActivity(new Intent(LoginOptionsActivity.this, MainActivity.class));
-                        finishAffinity();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: ", e);
-                        progressDialog.dismiss();
-                        MyUtils.toast(LoginOptionsActivity.this, "Failed to save due to "+e.getMessage());
-                    }
-                });
-    }
+//    private void firebaseAuthWithGoogleAccount(String idToken) {
+//        Log.d(TAG, "firebaseAuthWithGoogleAccount: idToken: "+idToken);
+//
+//        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+//
+//        firebaseAuth.signInWithCredential(credential)
+//                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+//                    @Override
+//                    public void onSuccess(AuthResult authResult) {
+//                        // SignIn success, let's check if the user is new (New Account Register) or existing (Existing Login)
+//                        if (authResult.getAdditionalUserInfo().isNewUser()) {
+//                            Log.d(TAG, "onSuccess: Account Created...!");
+//                            // New User, Account created. Let's save user info to Firebase realtime database
+//                            updateUserInfoDB();
+//                        } else {
+//                            Log.d(TAG, "onSuccess: Logged In...!");
+//                            // Existing User. No need to save user info to Firebase realtime database, Start MainActivity
+//                            startActivity(new Intent(LoginOptionsActivity.this, MainActivity.class));
+//                            finishAffinity();
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: ", e);
+//                    }
+//                });
+//    }
+//
+//    private void updateUserInfoDB() {
+//        Log.d(TAG, "updateUserInfoDB: ");
+//
+//        // set message and show progress dialog
+//        progressDialog.setMessage("Saving user info...!");
+//        progressDialog.show();
+//
+//        // get current timestamp e.g. to show user registration date/time
+//        long timestamp = MyUtils.timestamp();
+//        String registeredUserUid = firebaseAuth.getUid();
+//        String registeredUserEmail = firebaseAuth.getCurrentUser().getEmail();
+//        String name = firebaseAuth.getCurrentUser().getDisplayName();
+//
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("uid", registeredUserUid);
+//        hashMap.put("email", registeredUserEmail);
+//        hashMap.put("name", name);
+//        hashMap.put("timestamp", timestamp);
+//        hashMap.put("phoneCode", "");
+//        hashMap.put("phoneNumber", "");
+//        hashMap.put("profileImageUrl", "");
+//        hashMap.put("dob", "");
+//        hashMap.put("userType", MyUtils.USER_TYPE_GOOGLE);
+//        hashMap.put("token", "");
+//
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+//        ref.child(registeredUserUid)
+//                .setValue(hashMap)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        Log.d(TAG, "onSuccess: User info saved...!");
+//                        progressDialog.dismiss();
+//                        startActivity(new Intent(LoginOptionsActivity.this, MainActivity.class));
+//                        finishAffinity();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: ", e);
+//                        progressDialog.dismiss();
+//                        MyUtils.toast(LoginOptionsActivity.this, "Failed to save due to "+e.getMessage());
+//                    }
+//                });
+//    }
 
 }

@@ -95,6 +95,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/noAccountTv"
+            style="@style/TextAppearance.Material3.BodyMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_account_register"
+            android:paddingVertical="5dp"
+            android:layout_below="@id/passwordTil"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginBtnTv"
             android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe;
+package com.huyntd.superapp.gundamshop_mobilefe;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.activities;
+package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,19 +9,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.huyntd.superapp.gundamshopmobilefe.R;
-import com.huyntd.superapp.gundamshopmobilefe.databinding.ActivityMainBinding;
-import com.huyntd.superapp.gundamshopmobilefe.fragments.ChatsListFragment;
-import com.huyntd.superapp.gundamshopmobilefe.fragments.FavoriteListFragment;
-import com.huyntd.superapp.gundamshopmobilefe.fragments.HomeFragment;
-import com.huyntd.superapp.gundamshopmobilefe.fragments.ProfileFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.ChatsListFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.HomeFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
     //View binding
     private ActivityMainBinding binding;
-
-    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +30,7 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_main);
         setContentView(binding.getRoot());
 
-        firebaseAuth = firebaseAuth.getInstance();
-
-        if (firebaseAuth.getCurrentUser() == null) {
+        if (!SessionManager.getInstance(MainActivity.this).isLoggedIn()) {
             startLoginOptionsActivity();
         }
 

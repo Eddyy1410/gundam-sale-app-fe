@@ -2,4 +2,29 @@
     <string name="app_name">Gundam Shop Mobile FE</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- translatable="false" không dịch sang ngôn ngu khác được vd: english -> vn -->
+    <!-- Trường hợp generated values.xml không lấy giá trị ở file này, thì nên check plugin cả 2 file build.gradle.kts (app và project) -->
+    <!-- VD: trước đó dùng firebase tự generate default_web_client_id muốn generated values.xml nhận giá trị ở file này mà ko lấy -->
+    <!-- default_web_client_id tự động generate của firebase thì phải xóa: -->
+    <!-- plugin {alias(libs.plugins.google.gms.google.services)} cả 2 file build.gradle.kts (app và project) -->
+    <string name="default_web_client_id" translatable="false">964490954339-3mp2niajhh7btb1s7ll4l082pf6rkju3.apps.googleusercontent.com</string>
+
+    <!-- Configure Google Sign In -->
+    <!-- Lấy từ Project Settings trên Google Cloud -> Project Number -->
+    <string name="gcm_defaultSenderId" translatable="false">964490954339</string>
+    <!-- Lấy từ APIs & Services -> Credentials -> API Keys -->
+    <string name="google_api_key" translatable="false">AIzaSyDm838EQddKMPplz-mbZsMAdhbhh8CzALE</string>
+    <!-- Định dạng là "1:PROJECT_NUMBER:android:APP_HASH" -->
+    <!-- PROJECT NUMBER thì bằng với gcm_defaultSenderId / project number phía trên -->
+    <!-- Cách dễ nhất để lấy là xem trong file google-services.json cũ, lấy từ generated values.xml cũ -->
+    <string name="google_app_id" translatable="false">1:964490954339:android:8eaad91f1e79fdc9698830</string>
+
+
+    <string name="no_account_register">No Account? <b>Register</b></string>
+
+    <!-- những thứ còn lại ở generated values.xml có thể sau nay dùng, đã bỏ bớt firebase dtb và default_web_client_id tự generate của firebase -->
+    <!--    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDe7uQujqioC93wBmKJaxqXotQUbtCMmLs</string>-->
+    <!--    <string name="google_storage_bucket" translatable="false">gundam-shop-mobile.firebasestorage.app</string>-->
+    <!--    <string name="project_id" translatable="false">gundam-shop-mobile</string>-->
 </resources>

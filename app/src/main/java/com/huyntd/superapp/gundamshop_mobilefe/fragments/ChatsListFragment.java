@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshopmobilefe.fragments;
+package com.huyntd.superapp.gundamshop_mobilefe.fragments;
 
 import android.os.Bundle;
 
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.huyntd.superapp.gundamshopmobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.R;
 
 public class ChatsListFragment extends Fragment {
 

@@ -1,10 +1,11 @@
-package com.huyntd.superapp.gundamshopmobilefe.api;
+package com.huyntd.superapp.gundamshop_mobilefe.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.huyntd.superapp.gundamshopmobilefe.models.ApiResponse;
-import com.huyntd.superapp.gundamshopmobilefe.models.request.AuthenticationRequest;
-import com.huyntd.superapp.gundamshopmobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -27,4 +28,7 @@ public interface ApiService {
 
     @POST("auth/log-in")
     Call<ApiResponse<AuthenticationResponse>> login(@Body AuthenticationRequest request);
+
+    @POST("auth/google-android")
+    Call<ApiResponse<AuthenticationResponse>> loginGoogle(@Body GoogleTokenRequest request);
 }
