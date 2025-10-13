@@ -63,14 +63,14 @@ public class LoginOptionsActivity extends AppCompatActivity {
         binding = ActivityLoginOptionsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Init/Setup ProgressDialog to show while sign-in
+        // Init/Setup ProgressDialog to show while sign-in
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait...");
         progressDialog.setCanceledOnTouchOutside(false);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        //Configure Google Sign In
+        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -87,39 +87,15 @@ public class LoginOptionsActivity extends AppCompatActivity {
         binding.loginEmailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Instantiate the RequestQueue.
-                RequestQueue queue = Volley.newRequestQueue(LoginOptionsActivity.this);
-                String url = "http://localhost:8080/auth/log-in";
-
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(LoginOptionsActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(LoginOptionsActivity.this, "Something wrong...", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                // Add the request to the RequestQueue.
-                queue.add(request);
+                startLoginEmailActivity();
             }
         });
 
-        //Handle loginGoogleBtn click, begin google sign in
+        // Handle loginGoogleBtn click, begin google sign in
         binding.loginGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 beginGoogleLogin();
-            }
-        });
-
-        binding.loginEmailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startLoginEmailActivity();
             }
         });
 
@@ -144,6 +120,7 @@ public class LoginOptionsActivity extends AppCompatActivity {
                     Log.d(TAG, "onActivityResult: ");
                     // handle google signIn result here
                     if (result.getResultCode() == LoginOptionsActivity.RESULT_OK) {
+
                         // get
                         Intent data = result.getData();
 
@@ -153,7 +130,8 @@ public class LoginOptionsActivity extends AppCompatActivity {
                             // Google signIn was successful, authenticate with Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             Log.d(TAG, "onActivityResult: AccountID: "+account.getId());
-                            firebaseAuthWithGoogleAccount(account.getIdToken());
+                            Log.i(TAG, "onActivityResult: "+account.get);
+//                            firebaseAuthWithGoogleAccount(account.getIdToken());
                         } catch (Exception e) {
                             Log.e(TAG, "onActivityResult: ", e);
                         }

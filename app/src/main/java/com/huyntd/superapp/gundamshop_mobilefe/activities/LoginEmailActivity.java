@@ -31,7 +31,7 @@ public class LoginEmailActivity extends AppCompatActivity {
 
     private AuthenticationResponse loginResult = new AuthenticationResponse();
 
-    String TAG = "LOGIN_EMAIL";
+    private static final String TAG = "LOGIN_EMAIL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
