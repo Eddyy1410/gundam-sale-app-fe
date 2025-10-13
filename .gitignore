@@ -1,15 +1,66 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# ===============================================
+# Files được tạo bởi hệ thống Build (Gradle)
+# Luôn được tạo lại mỗi khi bạn build hoặc chạy ứng dụng.
+# Thư mục build/ là nơi lớn nhất và quan trọng nhất cần ignore.
+# ===============================================
+*.apk
+*.aab
+*.ap_
+*.dex
+/build/
+/app/build/
+
+
+# ===============================================
+# Files cấu hình Local
+# Chứa các đường dẫn và cài đặt riêng trên máy tính của bạn.
+# Mỗi lập trình viên sẽ có một file khác nhau.
+# ===============================================
 local.properties
+.gradle/
+
+
+# ===============================================
+# Files của IDE (Android Studio / IntelliJ)
+# Chứa các cài đặt về giao diện, lịch sử, cache của IDE.
+# Đưa lên Git sẽ gây ra xung đột không cần thiết khi làm việc nhóm.
+# ===============================================
+.idea/
+*.iml
+*.ipr
+*.iws
+# Các thư mục cache khác của Android Studio
+/captures/
+.externalNativeBuild/
+
+
+# ===============================================
+# File Keystore (CỰC KỲ QUAN TRỌNG)
+# Chứa "chìa khóa" kỹ thuật số để ký và phát hành ứng dụng lên Google Play.
+# TUYỆT ĐỐI KHÔNG đưa file này lên Git để tránh bị lộ.
+# Nếu bị lộ, người khác có thể giả mạo ứng dụng của bạn.
+# ===============================================
+*.jks
+*.keystore
+
+
+# ===============================================
+# Files log, báo cáo và các file tạm
+# ===============================================
+*.log
+# Báo cáo của Lint, test, v.v.
+/app/build/reports/
+
+
+# ===============================================
+# Files cấu hình nhạy cảm
+# Ví dụ: file chứa API key. Nên được quản lý qua biến môi trường hoặc gradle.properties.
+# ===============================================
+# google-services.json # Bỏ comment dòng này nếu bạn muốn mỗi thành viên tự tải file này từ Firebase.
+
+
+# ===============================================
+# Các file hệ thống của macOS và Windows
+# ===============================================
+.DS_Store
+Thumbs.db
