@@ -12,6 +12,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -33,6 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+
 public class LoginOptionsActivity extends AppCompatActivity {
 
     private ActivityLoginOptionsBinding binding;
@@ -49,6 +53,13 @@ public class LoginOptionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginOptionsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // --- Tránh vùng camera (notch) ---
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, bars.top, 0, 0);
+            return insets;
+        });
 
         // Init/Setup ProgressDialog to show while sign-in
         progressDialog = new ProgressDialog(this);

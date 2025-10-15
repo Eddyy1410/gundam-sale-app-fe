@@ -6,6 +6,9 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationBarView;
@@ -29,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
         //Chú ý dòng này!!!!! nếu dùng binding
         //setContentView(R.layout.activity_main);
         setContentView(binding.getRoot());
+
+        // --- Tránh vùng camera (notch) ---
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, bars.top, 0, 0);
+            return insets;
+        });
 
         if (!SessionManager.getInstance(MainActivity.this).isLoggedIn()) {
             startLoginOptionsActivity();

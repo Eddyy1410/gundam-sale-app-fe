@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
@@ -27,11 +30,19 @@ public class LoginEmailActivity extends AppCompatActivity {
 
     private static final String TAG = "LOGIN_EMAIL";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginEmailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // --- Tránh vùng camera (notch) ---
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, bars.top, 0, 0);
+            return insets;
+        });
 
         binding.toolbarBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,12 +75,12 @@ public class LoginEmailActivity extends AppCompatActivity {
             }
         });
 
-        binding.noAccountTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startRegisterEmailActivity();
-            }
-        });
+//        binding.noAccountTv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startRegisterEmailActivity();
+//            }
+//        });
 
     }
 
@@ -81,8 +92,8 @@ public class LoginEmailActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void startRegisterEmailActivity() {
-        startActivity(new Intent(this, RegisterEmailActivity.class));
-    }
+//    private void startRegisterEmailActivity() {
+//        startActivity(new Intent(this, RegisterEmailActivity.class));
+//    }
 
 }
