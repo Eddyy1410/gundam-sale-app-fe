@@ -12,6 +12,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -52,6 +55,13 @@ public class LoginOptionsActivity extends AppCompatActivity {
         binding = ActivityLoginOptionsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // --- Tránh vùng camera (notch) ---
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, bars.top, 0, 0);
+            return insets;
+        });
+
         // Init/Setup ProgressDialog to show while sign-in
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait...");
@@ -90,21 +100,21 @@ public class LoginOptionsActivity extends AppCompatActivity {
 
     }
 
-    void startMainActivity() {
+    private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    void startLoginEmailActivity() {
+    private void startLoginEmailActivity() {
         startActivity(new Intent(this, LoginEmailActivity.class));
     }
 
-    void beginGoogleLogin() {
+    private void beginGoogleLogin() {
         Log.d(TAG, "beginGoogleLogin: ");
         Intent googleSignInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInARL.launch(googleSignInIntent);
     }
 
-    ActivityResultLauncher<Intent> googleSignInARL = registerForActivityResult(
+    private ActivityResultLauncher<Intent> googleSignInARL = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
