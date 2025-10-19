@@ -28,7 +28,7 @@ public class LoginEmailActivity extends AppCompatActivity {
 
     private AuthenticationResponse loginResult = new AuthenticationResponse();
 
-    private static final String TAG = "LOGIN_EMAIL";
+    private static final String TAG = "LOGIN_EMAIL_TAG";
 
 
     @Override
@@ -47,7 +47,7 @@ public class LoginEmailActivity extends AppCompatActivity {
         binding.toolbarBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startLoginOptionsActivity();
+                finish();
             }
         });
 

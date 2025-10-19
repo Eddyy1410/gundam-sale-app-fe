@@ -14,12 +14,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationRequest {
+public class UserRegisterRequest {
 
-    // cái này dùng khi phía server yêu cầu tên khác thì đổi lại
-    @SerializedName("email")
     String email;
 
     String password;
+
+    @SerializedName("fullName")
+    String name;
+
+    String phone;
 
 }
