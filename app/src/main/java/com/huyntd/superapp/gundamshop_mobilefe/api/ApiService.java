@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -31,4 +33,7 @@ public interface ApiService {
 
     @POST("auth/google-android")
     Call<ApiResponse<AuthenticationResponse>> loginGoogle(@Body GoogleTokenRequest request);
+
+    @POST("user/")
+    Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 }

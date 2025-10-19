@@ -28,21 +28,23 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginOptionsActivity extends AppCompatActivity {
 
-    private ActivityLoginOptionsBinding binding;
+    ActivityLoginOptionsBinding binding;
 
-    private static final String TAG = "LOGIN_OPTIONS_TAG";
+    static final String TAG = "LOGIN_OPTIONS_TAG";
 
     //ProgressDialog to show while google sign in
-    private ProgressDialog progressDialog;
+    ProgressDialog progressDialog;
 
-    private GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,21 +90,21 @@ public class LoginOptionsActivity extends AppCompatActivity {
 
     }
 
-    private void startMainActivity() {
+    void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void startLoginEmailActivity() {
+    void startLoginEmailActivity() {
         startActivity(new Intent(this, LoginEmailActivity.class));
     }
 
-    private void beginGoogleLogin() {
+    void beginGoogleLogin() {
         Log.d(TAG, "beginGoogleLogin: ");
         Intent googleSignInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInARL.launch(googleSignInIntent);
     }
 
-    private ActivityResultLauncher<Intent> googleSignInARL = registerForActivityResult(
+    ActivityResultLauncher<Intent> googleSignInARL = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
