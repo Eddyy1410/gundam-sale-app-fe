@@ -4,5 +4,5 @@
     <dimen name="m_toolbar_height">55dp</dimen>
     <!-- Height for button in whole app -->
     <dimen name="m_button_height">55dp</dimen>
-
+    <dimen name="grid_spacing">8dp</dimen>
 </resources>

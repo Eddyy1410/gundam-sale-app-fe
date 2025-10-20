@@ -27,4 +27,11 @@
     <!--    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDe7uQujqioC93wBmKJaxqXotQUbtCMmLs</string>-->
     <!--    <string name="google_storage_bucket" translatable="false">gundam-shop-mobile.firebasestorage.app</string>-->
     <!--    <string name="project_id" translatable="false">gundam-shop-mobile</string>-->
+
+
+    <string name="product_image">Product image</string>
+    <string name="title_activity_product_list">ProductListActivity</string>
+    <string name="title_activity_product_detail">ProductDetailActivity</string>
+    <string name="add_to_cart">Thêm vào giỏ</string>
+    <string name="mua_v_i_voucher_118_600">Mua với voucher 118.600₫</string>
 </resources>

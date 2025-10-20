@@ -1,0 +1,21 @@
+package com.huyntd.superapp.gundamshop_mobilefe.models;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class PageResponse<T> {
+    private List<T> content;
+    private int totalPages;
+    private long totalElements;
+
+    // getters & setters
+
+}
