@@ -14,9 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GundamShopMobileFE"
         android:usesCleartextTraffic="true" >
+
+        <activity android:name=".activities.ProductDetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_product_detail"
+            android:theme="@style/Theme.GundamShopMobileFE" />
+        <activity
+            android:name=".activities.ProductListActivity"
+            android:exported="false"
+            android:label="@string/title_activity_product_list"
+            android:theme="@style/Theme.GundamShopMobileFE" />
+
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false" />
+
         <activity
             android:name=".activities.RegisterEmailActivity"
             android:exported="false" />

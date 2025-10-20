@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationBarView;
@@ -18,6 +19,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ChatsListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.HomeFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // show default
-        showHomeFragment();
+        showProductListFragment();
 
         System.out.println("Start hereeeee");
 
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (itemId == R.id.item_home){
                     System.out.println("Home hereeeee");
-                    showHomeFragment();
+                    showProductListFragment();
                 } else if (itemId == R.id.item_chats) {
                     System.out.println("Chats hereeeee");
                     showChatsListFragment();
@@ -73,22 +75,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showHomeFragment() {
+    private void showProductListFragment() {
+        // Kiểm tra nếu fragment đã tồn tại, không cần tạo lại
+        Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("ProductListFragment");
 
-        binding.toolbarTitleTv.setText("Home");
-
-        HomeFragment homeFragment = new HomeFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        // dùng fragment "homeFragment" bỏ vào fragment layout "fragmentsFL"
-        // gán tag để sau này có thể dùng getSupportFragmentManager().findFragmentByTag("HomeFragment")
-        fragmentTransaction.replace(binding.fragmentsFL.getId(), homeFragment, "HomeFragment");
-        fragmentTransaction.commit();
-
+        if (existingFragment == null) {
+            ProductListFragment productListFragment = new ProductListFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(binding.fragmentsFL.getId(), productListFragment, "ProductListFragment")
+                    .commit();
+        } else {
+            // Nếu fragment đã có (VD: xoay màn hình), chỉ cần hiển thị lại
+            getSupportFragmentManager().beginTransaction()
+                    .show(existingFragment)
+                    .commit();
+        }
     }
 
     private void showChatsListFragment() {
 
-        binding.toolbarTitleTv.setText("Chats");
+//        binding.toolbarTitleTv.setText("Chats");
 
         ChatsListFragment chatsListFragment = new ChatsListFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showFavoriteListFragment() {
 
-        binding.toolbarTitleTv.setText("Favorites");
+//        binding.toolbarTitleTv.setText("Favorites");
 
         FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void showProfileFragment() {
 
-        binding.toolbarTitleTv.setText("Profile");
+//        binding.toolbarTitleTv.setText("Profile");
 
         ProfileFragment profileFragment = new ProfileFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
