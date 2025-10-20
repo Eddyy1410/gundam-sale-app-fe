@@ -5,9 +5,14 @@
     <color name="colorPrimary">#3CB379</color>
     <color name="colorPrimaryDark">#215A3F</color>
     <color name="black_transparent">#8B000000</color>
+
     <color name="gray">#808080</color> <!-- 👈 Màu xám trung tính -->
     <color name="teal_700">#018786</color> <!-- 👈 Chuẩn theo Material Design -->
     <color name="orange">#F25912</color>
     <color name="price_red_standard">#D32F2F</color>
+
+
+    <color name="colorGray01">#d3d3d3</color>
+    <color name="colorGray02">#cccccc</color>
 
 </resources>

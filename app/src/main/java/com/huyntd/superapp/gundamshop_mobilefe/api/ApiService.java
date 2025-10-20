@@ -6,10 +6,15 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
+
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
 import java.util.List;
+
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
+
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -39,6 +44,7 @@ public interface ApiService {
     @POST("auth/google-android")
     Call<ApiResponse<AuthenticationResponse>> loginGoogle(@Body GoogleTokenRequest request);
 
+
     @GET("api/products")
     Call<ApiResponse<PageResponse<ProductResponse>>> getProducts();
 
@@ -51,5 +57,9 @@ public interface ApiService {
             @Query("page") int page,
             @Query("size") int size
     );
+
+
+    @POST("user/")
+    Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 
 }

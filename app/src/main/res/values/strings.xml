@@ -22,6 +22,7 @@
 
 
     <string name="no_account_register">No Account? <b>Register</b></string>
+    <string name="have_account_login">Have account? <b>Login</b></string>
 
     <!-- những thứ còn lại ở generated values.xml có thể sau nay dùng, đã bỏ bớt firebase dtb và default_web_client_id tự generate của firebase -->
     <!--    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDe7uQujqioC93wBmKJaxqXotQUbtCMmLs</string>-->
