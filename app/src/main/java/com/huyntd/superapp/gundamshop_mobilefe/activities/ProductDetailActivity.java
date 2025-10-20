@@ -1,5 +1,6 @@
 package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -79,6 +80,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         rvRelated = findViewById(R.id.rvRelatedProducts);
         relatedProductAdapter = new RelatedProductAdapter();
         rvRelated.setAdapter(relatedProductAdapter);
+
+        relatedProductAdapter.setOnItemClickListener(product -> {
+            if (product == null) return;
+
+            Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
+            intent.putExtra("product_id", product.getId());
+            startActivity(intent);
+        });
 
 // Dạng lưới 2 cột
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
