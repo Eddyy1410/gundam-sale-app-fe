@@ -123,6 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void handleShowChat() {
+        SessionManager sessionManager = SessionManager.getInstance(this);
+        String userRole = sessionManager.getRole();
+        if("STAFF".equalsIgnoreCase(userRole)){
+            showChatsListFragment();
+        } else if ("CUSTOMER".equalsIgnoreCase(userRole)) {
+//            show
+        }
+    }
+
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
     }

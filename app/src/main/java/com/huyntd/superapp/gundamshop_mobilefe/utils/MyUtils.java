@@ -1,7 +1,10 @@
 package com.huyntd.superapp.gundamshop_mobilefe.utils;
 
 import android.content.Context;
+import android.util.Base64;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 public class MyUtils {
 
@@ -16,5 +19,21 @@ public class MyUtils {
     public static long timestamp() {
         return System.currentTimeMillis();
     }
+
+
+    public JSONObject decodeJwtPayload(String token) {
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length == 3) {
+                String payloadJson = new String(Base64.decode(parts[1], Base64.URL_SAFE));
+                return new JSONObject(payloadJson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 }

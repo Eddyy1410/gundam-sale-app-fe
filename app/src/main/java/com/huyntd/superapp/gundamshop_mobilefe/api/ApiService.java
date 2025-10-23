@@ -1,5 +1,6 @@
 package com.huyntd.superapp.gundamshop_mobilefe.api;
 
+import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
@@ -9,6 +10,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
 import java.util.List;
@@ -62,4 +64,6 @@ public interface ApiService {
     @POST("user/")
     Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 
+    @GET("api/conversations")
+    Call<ApiResponse<ConversationResponse>> getConversations();
 }
