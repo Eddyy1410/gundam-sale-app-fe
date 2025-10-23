@@ -49,10 +49,6 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
-    //Firebase
-//    implementation(libs.firebase.analytics)
-//    implementation(libs.firebase.auth)
-//    implementation(libs.firebase.database)
     //   Là 1 thư viện SDK để giao tiếp với google play service để lấy id-token phía android user
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
@@ -77,6 +73,20 @@ dependencies {
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.30") // Kiểm tra phiên bản mới nhất
     annotationProcessor("org.projectlombok:lombok:1.18.30")
+
+    // Sử dụng thư viện giải mã JWT
+    //implementation("com.auth0.android:jwtdecode:2.0.2")
+
+    // WebSocket (Java-WebSocket là transport layer)
+    implementation("org.java-websocket:Java-WebSocket:1.5.3")
+
+    // STOMP client for Android
+    // NOTE: Thư viện này dựa trên RxJava2, nên cần thêm RxJava
+    implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+
+    // RxJava 2 dependencies (Cần thiết cho StompProtocolAndroid)
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

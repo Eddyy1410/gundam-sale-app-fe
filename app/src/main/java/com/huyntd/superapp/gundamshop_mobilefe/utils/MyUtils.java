@@ -1,4 +1,4 @@
-package com.huyntd.superapp.gundamshop_mobilefe;
+package com.huyntd.superapp.gundamshop_mobilefe.utils;
 
 import android.content.Context;
 import android.widget.Toast;

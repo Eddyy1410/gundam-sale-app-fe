@@ -22,7 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.huyntd.superapp.gundamshop_mobilefe.MyUtils;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.MyUtils;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;

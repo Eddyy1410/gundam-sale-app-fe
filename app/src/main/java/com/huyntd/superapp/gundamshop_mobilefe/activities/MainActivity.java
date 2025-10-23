@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Home hereeeee");
                     showProductListFragment();
                 } else if (itemId == R.id.item_chats) {
-                    System.out.println("Chats hereeeee");
-                    showChatsListFragment();
+                    startChatActivity();
                 } else if (itemId == R.id.item_favorite) {
                     System.out.println("Fav hereeeee");
                    showFavoriteListFragment();
@@ -126,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
+    }
+
+    private void startChatActivity() {
+        startActivity(new Intent(this, ChatActivity.class));
     }
 
 }
