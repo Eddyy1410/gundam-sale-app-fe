@@ -1,26 +1,16 @@
 package com.huyntd.superapp.gundamshop_mobilefe.api;
 
-import android.content.Context;
-
-import com.huyntd.superapp.gundamshop_mobilefe.MyApplication;
-import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
-import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
-
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
