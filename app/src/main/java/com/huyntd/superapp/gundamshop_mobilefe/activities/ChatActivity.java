@@ -32,7 +32,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         // 1. KẾT NỐI: Mở kết nối khi Activity hiển thị
         // Đây là thời điểm thích hợp nhất để mở kết nối real-time
         if (stompClient != null) {
@@ -59,4 +58,5 @@ public class ChatActivity extends AppCompatActivity {
         // Không cần disconnect() ở đây nếu đã làm trong onPause()
     }
     */
+
 }

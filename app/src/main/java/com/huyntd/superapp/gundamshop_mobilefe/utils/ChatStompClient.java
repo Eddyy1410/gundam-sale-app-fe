@@ -15,12 +15,11 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChatStompClient {
-
     static final String TAG = "CHAT_STOMP_CLIENT";
     final String jwtToken;
-    final String serverUrl = "ws://10.87.28.61:8080/ws-native";
+    final String serverUrl = "ws://192.168.100.58:8080/ws-native";
 
-    // Phải thêm maven { url = uri("https://jitpack.io") } trong
+    // Phải thêm maven { url = uri("https://jitpack.io") } trong settings.gradle.kts (Project Settings)
     // dependencyResolutionManagement {
     //         ....repositories {
     //                   maven { url = uri("https://jitpack.io") }
@@ -66,6 +65,8 @@ public class ChatStompClient {
             }
         });
 
+
+        Log.i(TAG, "Thêm lifecycle vào compositeDisposable");
         // dùng compositeDisposable để bọc toàn bộ event gọi đến từ client thành 1 luồng
         // Khi disconnect -> thì hủy nguyên 1 luồng tránh memory leak
         compositeDisposable.add(lifecycleDisposable);

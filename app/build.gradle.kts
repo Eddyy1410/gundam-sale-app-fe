@@ -74,9 +74,6 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.30") // Kiểm tra phiên bản mới nhất
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 
-    // Sử dụng thư viện giải mã JWT
-    //implementation("com.auth0.android:jwtdecode:2.0.2")
-
     // WebSocket (Java-WebSocket là transport layer)
     implementation("org.java-websocket:Java-WebSocket:1.5.3")
 
