@@ -113,25 +113,21 @@ public class LoginEmailActivity extends AppCompatActivity {
             }
         });
 
-//        binding.noAccountTv.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startRegisterEmailActivity();
-//            }
-//        });
+        binding.noAccountTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRegisterEmailActivity();
+            }
+        });
 
-    }
-
-    private void startLoginOptionsActivity() {
-        startActivity(new Intent(this, LoginOptionsActivity.class));
     }
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-//    private void startRegisterEmailActivity() {
-//        startActivity(new Intent(this, RegisterEmailActivity.class));
-//    }
+    private void startRegisterEmailActivity() {
+        startActivity(new Intent(this, RegisterEmailActivity.class));
+    }
 
 }
