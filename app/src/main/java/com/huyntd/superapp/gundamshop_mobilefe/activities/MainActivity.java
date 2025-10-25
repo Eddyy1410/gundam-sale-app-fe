@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     showChatsListFragment();
                 } else if (itemId == R.id.item_favorite) {
                     System.out.println("Fav hereeeee");
-                   showFavoriteListFragment();
+                    showFavoriteListFragment();
                 } else if (itemId == R.id.item_profile) {
                     System.out.println("Profile hereeeee");
                     showProfileFragment();
@@ -127,5 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
     }
+
+
 
 }

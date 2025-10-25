@@ -15,4 +15,14 @@
     <color name="colorGray01">#d3d3d3</color>
     <color name="colorGray02">#cccccc</color>
 
+    <color name="brand_red">#E91E3F</color>
+    <color name="brand_pale_red">#FFDDE1</color>
+    <color name="text_dark">#222222</color>
+    <color name="text_gray">#777777</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="muted_green">#DFF5EA</color>
+    <color name="muted_green_text">#2EAA6F</color>
+    <color name="accent">#FF6F61</color>
+    <color name="bg_gray">#F5F6F8</color>
+
 </resources>
