@@ -184,7 +184,7 @@
             <!-- Tabs (simple horizontal scroll buttons) -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:elevation="2dp"
                 android:overScrollMode="never"
                 android:paddingVertical="4dp"
@@ -282,7 +282,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_orders"
                 android:layout_width="match_parent"
-                android:layout_height="328dp"
+                android:layout_height="430dp"
                 android:layout_marginTop="@dimen/padding_md" />
         </LinearLayout>
     </ScrollView>

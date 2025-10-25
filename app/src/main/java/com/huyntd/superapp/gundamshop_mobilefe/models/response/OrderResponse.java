@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class OrderResponse {
     int id;
     String billingAddress;
-    LocalDateTime orderDate;
+    String orderDate;
     String status;
     String paymentMethod;
     double totalPrice;

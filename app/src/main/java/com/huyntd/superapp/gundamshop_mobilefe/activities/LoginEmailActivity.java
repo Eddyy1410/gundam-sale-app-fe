@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.gson.Gson;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityLoginEmailBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
@@ -51,11 +52,11 @@ public class LoginEmailActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        ApiService api = ApiClient.getApiService();
         binding.loginBtnTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ApiService.apiService.login(AuthenticationRequest.builder()
+                api.login(AuthenticationRequest.builder()
                         .email(binding.emailEt.getText().toString())
                         .password(binding.passwordEt.getText().toString())
                         .build()).enqueue(new Callback<ApiResponse<AuthenticationResponse>>() {

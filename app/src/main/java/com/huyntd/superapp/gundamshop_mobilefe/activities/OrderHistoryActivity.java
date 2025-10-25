@@ -80,8 +80,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
                             public void onDetailClick(OrderResponse item) {
                                 // TODO: mở chi tiết đơn hàng
                             }
-                        },
-                        orderViewModel
+                        }
                 );
 
 

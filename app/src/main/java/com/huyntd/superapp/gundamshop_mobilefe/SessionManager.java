@@ -2,7 +2,9 @@ package com.huyntd.superapp.gundamshop_mobilefe;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.MyUtils;
 
 import org.json.JSONArray;
@@ -45,6 +47,8 @@ public class SessionManager {
     public void saveAuthToken(String token) {
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.apply(); // Dùng apply() để lưu bất đồng bộ
+        ApiClient.setToken(token);
+        Log.i("Token", token);
     }
 
     public String getAuthToken() {

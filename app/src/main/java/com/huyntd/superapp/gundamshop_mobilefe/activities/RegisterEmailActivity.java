@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityRegisterEmailBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
@@ -73,7 +74,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
     }
 
     String email, password, cPassword, name, phone;
-
+    ApiService api = ApiClient.getApiService();
     void validateData() {
 
         email = binding.emailEt.getText().toString();
@@ -99,7 +100,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
             binding.cPasswordEt.requestFocus();
 
         } else {
-            ApiService.apiService.register(UserRegisterRequest.builder()
+            api.register(UserRegisterRequest.builder()
                     .email(email)
                     .password(password)
                     .name(name)

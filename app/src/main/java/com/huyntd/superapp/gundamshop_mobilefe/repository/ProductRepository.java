@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
@@ -19,7 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductRepository {
-    private final ApiService apiService = ApiService.apiService;
+    private final ApiService apiService = ApiClient.getApiService();
 //
 //    public ProductRepository() {
 //        this.apiService = apiService;
@@ -28,7 +29,7 @@ public class ProductRepository {
     public LiveData<List<ProductResponse>> getProducts() {
         MutableLiveData<List<ProductResponse>> data = new MutableLiveData<>();
 
-        ApiService.apiService.getProducts().enqueue(new Callback<ApiResponse<PageResponse<ProductResponse>>>() {
+        apiService.getProducts().enqueue(new Callback<ApiResponse<PageResponse<ProductResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<PageResponse<ProductResponse>>> call, Response<ApiResponse<PageResponse<ProductResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
