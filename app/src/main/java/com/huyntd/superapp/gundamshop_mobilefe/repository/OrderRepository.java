@@ -20,6 +20,7 @@ import retrofit2.Response;
 public class OrderRepository {
 
     private static OrderRepository instance;
+    private String TAG = "ORDER_REPOSITORY_TAG";
 
     private OrderRepository() {}
 
@@ -37,7 +38,8 @@ public class OrderRepository {
             @Override
             public void onResponse(Call<ApiResponse<PageResponse<OrderResponse>>> call,
                                    Response<ApiResponse<PageResponse<OrderResponse>>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                Log.i(TAG, "onResponse: "+response.toString());
+                if (response.isSuccessful() && response.body() != null) {
                     // ✅ Lấy danh sách đơn hàng từ PageResponse
                     data.setValue(response.body().getResult().getContent());
                     Log.d("OrderRepository", "✅ Loaded orders successfully for user: " + userId);
