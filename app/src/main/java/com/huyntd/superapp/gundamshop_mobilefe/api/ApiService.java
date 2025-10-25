@@ -38,7 +38,7 @@ public interface ApiService {
 
     ApiService apiService = new Retrofit.Builder()
             // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
-            .baseUrl("http://192.168.100.58:8080/")
+            .baseUrl("http://192.168.137.1:8080/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService.class);

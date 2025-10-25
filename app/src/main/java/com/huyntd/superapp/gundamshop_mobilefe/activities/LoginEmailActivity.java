@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityLoginEmailBinding;
@@ -60,10 +61,47 @@ public class LoginEmailActivity extends AppCompatActivity {
                         .build()).enqueue(new Callback<ApiResponse<AuthenticationResponse>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<AuthenticationResponse>> call, Response<ApiResponse<AuthenticationResponse>> response) {
-                        Log.i(TAG, "onResponse: "+response.body().toString());
-                        SessionManager.getInstance(LoginEmailActivity.this).saveAuthToken(response.body().getResult().getToken());
-                        Toast.makeText(LoginEmailActivity.this, SessionManager.getInstance(LoginEmailActivity.this).getAuthToken(), Toast.LENGTH_SHORT).show();
-                        startMainActivity();
+                        if (response.isSuccessful()) {
+                            // Trường hợp THÀNH CÔNG (HTTP 200)
+                            ApiResponse<AuthenticationResponse> successResponse = response.body();
+                            if (successResponse != null && successResponse.isSuccess()) {
+                                // Lưu token và chuyển màn hình
+                                String token = successResponse.getResult().getToken();
+                                SessionManager.getInstance(LoginEmailActivity.this).saveAuthToken(token);
+                                Toast.makeText(LoginEmailActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                startMainActivity();
+                            } else {
+                                // Lỗi logic từ server (Ví dụ: success=false nhưng HTTP 200 OK)
+                                Toast.makeText(LoginEmailActivity.this, "Lỗi logic: " + successResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            // Trường hợp THẤT BẠI HTTP (404, 500, 401, v.v.)
+                            try {
+                                // 1. Lấy body lỗi dưới dạng chuỗi
+                                String errorJson = response.errorBody().string();
+
+                                // 2. Sử dụng Gson (hoặc Moshi) để chuyển chuỗi JSON lỗi thành ApiResponse
+                                // ==> Cần phải khởi tạo Gson và định nghĩa lại kiểu generic cho ApiResponse
+                                // Sử dụng Type: Type type = new TypeToken<ApiResponse<Object>>() {}.getType();
+                                // Hoặc đơn giản hơn, nếu bạn chỉ cần message:
+
+                                // SỬ DỤNG GSON ĐỂ PARSE LỖI:
+                                Gson gson = new Gson();
+                                ApiResponse<?> errorResponse = gson.fromJson(errorJson, ApiResponse.class);
+
+                                if (errorResponse != null && errorResponse.getMessage() != null) {
+                                    // Hiển thị thông báo lỗi từ Server (User not existed!)
+                                    Toast.makeText(LoginEmailActivity.this, errorResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(LoginEmailActivity.this, "Lỗi HTTP " + response.code(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing error body: ", e);
+                                Toast.makeText(LoginEmailActivity.this, "Lỗi không xác định.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
 
                     @Override
