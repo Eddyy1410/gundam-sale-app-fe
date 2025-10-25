@@ -34,37 +34,6 @@ public interface ApiService {
 //            .setDateFormat("yyyy-MM-dd HH:mm:ss")
 //            .create();
 
-    // 1. TẠO OKHTTP CLIENT
-    OkHttpClient client = new OkHttpClient.Builder()
-            .addInterceptor(chain -> {
-                // Lấy Application Context tĩnh
-                Context context = MyApplication.getAppContext();
-
-                // Lấy Token từ SessionManager
-                // CHÚ Ý: Đảm bảo rằng getAppContext() không trả về NULL
-                String token = null;
-                if (context != null) {
-                    token = SessionManager.getInstance(context).getAuthToken();
-                }
-
-                Request original = chain.request();
-                Request.Builder requestBuilder = original.newBuilder();
-
-                // Thêm Header nếu Token tồn tại
-                if (token != null && !token.isEmpty()) {
-                    requestBuilder.header("Authorization", "Bearer " + token);
-                }
-
-                return chain.proceed(requestBuilder.build());
-            })
-            // Thêm Logging Interceptor (Tùy chọn, nên thêm)
-            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .build();
-
-
     // 2. KHỞI TẠO RETROFIT
 //    ApiService apiService = new Retrofit.Builder()
 //            // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
