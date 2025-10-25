@@ -1,5 +1,6 @@
 package com.huyntd.superapp.gundamshop_mobilefe.api;
 
+import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.huyntd.superapp.gundamshop_mobilefe.MyApplication;
@@ -12,6 +13,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationRes
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderItemResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
@@ -36,7 +38,7 @@ public interface ApiService {
 
     ApiService apiService = new Retrofit.Builder()
             // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
-            .baseUrl("http://10.0.2.2:8080/")
+            .baseUrl("http://192.168.100.58:8080/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService.class);
@@ -72,4 +74,7 @@ public interface ApiService {
 
     @GET("order/{id}")
     Call<ApiResponse<OrderResponse>> getOrderDetail(@Path("id") int id);
+
+    @GET("api/conversations")
+    Call<ApiResponse<ConversationResponse>> getConversations();
 }

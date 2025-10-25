@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/userAvatarIv"
+            android:id="@+id/customerAvatarIv"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_centerVertical="true"
@@ -27,7 +27,7 @@
             app:shapeAppearanceOverlay="@style/ImageStyle_Circle" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/customerNameTv"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="310dp"
             android:layout_height="wrap_content"
@@ -36,12 +36,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/userAvatarIv"
+            app:layout_constraintStart_toEndOf="@+id/customerAvatarIv"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/lastMessageTv"
             style="@style/TextAppearance.Material3.BodySmall"
             android:layout_width="241dp"
             android:layout_height="0dp"
@@ -49,20 +49,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/userAvatarIv"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintStart_toEndOf="@+id/customerAvatarIv"
+            app:layout_constraintTop_toBottomOf="@+id/customerNameTv"
             app:layout_constraintVertical_bias="0.0"
             tools:text="@tools:sample/lorem[10]" />
 
         <TextView
-            android:id="@+id/timeTv"
+            android:id="@+id/chatTimestampTv"
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.542"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/lastMessageTv"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="hh:mm" />
 
