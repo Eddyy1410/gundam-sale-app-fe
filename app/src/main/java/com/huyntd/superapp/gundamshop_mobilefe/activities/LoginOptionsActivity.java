@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.MyUtils;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
@@ -48,6 +49,8 @@ public class LoginOptionsActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
 
     GoogleSignInClient mGoogleSignInClient;
+
+    ApiService api = ApiClient.getApiService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +136,7 @@ public class LoginOptionsActivity extends AppCompatActivity {
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             Log.d(TAG, "onActivityResult: AccountID: "+account.getId());
 
-                            ApiService.apiService.loginGoogle(GoogleTokenRequest.builder()
+                            api.loginGoogle(GoogleTokenRequest.builder()
                                     .idToken(account.getIdToken())
                                     .build()).enqueue(new Callback<ApiResponse<AuthenticationResponse>>() {
                                 @Override

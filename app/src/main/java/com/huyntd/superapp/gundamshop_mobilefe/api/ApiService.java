@@ -14,7 +14,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterReques
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
+//import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
@@ -35,9 +35,9 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd HH:mm:ss")
-            .create();
+//    Gson gson = new GsonBuilder()
+//            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+//            .create();
 
     // 1. TẠO OKHTTP CLIENT
     OkHttpClient client = new OkHttpClient.Builder()
@@ -71,12 +71,12 @@ public interface ApiService {
 
 
     // 2. KHỞI TẠO RETROFIT
-    ApiService apiService = new Retrofit.Builder()
-            // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
-            .baseUrl("http://192.168.137.1:8080/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiService.class);
+//    ApiService apiService = new Retrofit.Builder()
+//            // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
+//            .baseUrl("http://192.168.137.1:8080/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiService.class);
 
     //-------------------------------AUTHENTICATION--------------------------------------
     @POST("auth/log-in")
@@ -113,6 +113,6 @@ public interface ApiService {
     Call<ApiResponse<OrderResponse>> getOrderDetail(@Path("id") int id);
 
     //--------------------------------CONVERSATION-------------------------------------
-    @GET("api/conversations")
-    Call<ApiResponse<ConversationResponse>> getConversations();
+//    @GET("api/conversations")
+//    Call<ApiResponse<ConversationResponse>> getConversations();
 }

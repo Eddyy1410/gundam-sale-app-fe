@@ -1,6 +1,7 @@
 package com.huyntd.superapp.gundamshop_mobilefe.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,18 +42,16 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
     private Context context;
     private List<OrderResponse> list;
     private OnItemClickListener listener;
-    private OrderViewModel orderViewModel; // không new ở đây
 
     public interface OnItemClickListener {
         void onDetailClick(OrderResponse item);
     }
 
     public OrdersAdapter(Context context, List<OrderResponse> list,
-                         OnItemClickListener listener, OrderViewModel orderViewModel) {
+                         OnItemClickListener listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
-        this.orderViewModel = orderViewModel;
     }
 
     @NonNull
@@ -65,7 +64,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         OrderResponse item = list.get(position);
-        var orderResponse = orderViewModel.getOrderDetail(list.get(position).getId());
         holder.tvName.setText(item.getOrderItems().get(0).getProductName());
         holder.tvDate.setText(item.getOrderDate()+"");
         holder.tvStatus.setText(item.getStatus());
@@ -74,6 +72,8 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
         if (img != null && !img.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(img)
+                    .override(300, 300) // fix size 200x200 pixel
+                    .centerCrop()       // cắt giữa hình để không méo
                     .into(holder.img);
         }
 
