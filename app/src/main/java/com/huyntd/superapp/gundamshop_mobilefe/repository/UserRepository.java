@@ -36,7 +36,7 @@ public class UserRepository {
         ApiClient.getApiService().getInfo().enqueue(new Callback<ApiResponse<UserResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                if (response.isSuccessful() && response.body() != null) {
                     data.setValue(response.body().getResult());
                 } else {
                     Log.e(TAG, "API failed: " + response.message());

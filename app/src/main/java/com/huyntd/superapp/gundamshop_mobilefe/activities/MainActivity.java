@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationBarView;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ChatsListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
@@ -44,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (!SessionManager.getInstance(MainActivity.this).isLoggedIn()) {
             startLoginOptionsActivity();
+        } else {
+            // Trường hợp tắt app mà chưa logout thì sessionManager vẫn lưu token tuy nhiên ApiClient đã xóa token
+            // --> khi mà vào lại app ---> vào thẳng Home ko thông qua login (do sessionManager đã có token)
+            // Mà ApiClient chỉ được gán token thông qua login --> bị lỗi 1 số api cần bearer token
+            ApiClient.setToken(SessionManager.getInstance(MainActivity.this).getAuthToken());
         }
 
         // show default

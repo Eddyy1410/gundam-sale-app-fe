@@ -43,6 +43,9 @@ public interface ApiService {
     @POST("user/")
     Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 
+    @GET("user/myInfo")
+    Call<ApiResponse<UserResponse>> getInfo();
+
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")
     @SkipAuth
