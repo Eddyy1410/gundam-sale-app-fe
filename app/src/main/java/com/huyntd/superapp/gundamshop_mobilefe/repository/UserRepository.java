@@ -19,7 +19,8 @@ public class UserRepository {
     private static final String TAG = "UserRepository";
     private static UserRepository instance;
 
-    private UserRepository() {}
+    private UserRepository() {
+    }
 
     public static synchronized UserRepository getInstance() {
         if (instance == null) {
@@ -51,4 +52,3 @@ public class UserRepository {
         return data;
     }
 }
-
