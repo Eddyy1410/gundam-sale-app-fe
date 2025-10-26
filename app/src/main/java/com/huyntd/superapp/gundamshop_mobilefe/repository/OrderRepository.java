@@ -37,10 +37,7 @@ public class OrderRepository {
     public LiveData<List<OrderResponse>> getOrdersByUserId(int userId) {
         MutableLiveData<List<OrderResponse>> data = new MutableLiveData<>();
 
-        // ✅ Lấy ApiService mới nhất có token
-        ApiService api = ApiClient.getApiService();
-
-        api.getOrdersByUserId(userId)
+        ApiClient.getApiService().getOrdersByUserId(userId)
                 .enqueue(new Callback<ApiResponse<PageResponse<OrderResponse>>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<PageResponse<OrderResponse>>> call,

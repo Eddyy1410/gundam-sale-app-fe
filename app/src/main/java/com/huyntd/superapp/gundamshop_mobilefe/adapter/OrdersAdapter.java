@@ -1,6 +1,11 @@
 package com.huyntd.superapp.gundamshop_mobilefe.adapter;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.OrderDetailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
@@ -67,7 +73,25 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
         holder.tvName.setText(item.getOrderItems().get(0).getProductName());
         holder.tvDate.setText(item.getOrderDate()+"");
         holder.tvStatus.setText(item.getStatus());
-        holder.tvPrice.setText(item.getTotalPrice()+"");
+
+        int color = Color.parseColor("#FFD700");
+        var status = item.getStatus();
+        if (status.equals("CANCELLED") || status.equals("RETURNED")) {
+            color = Color.parseColor("#FF0000"); // đỏ
+        } else if (status.equals("DELIVERED")) {
+            color = Color.parseColor("#008000"); // xanh lá
+        }
+
+        // Tạo viền động
+        GradientDrawable bg = new GradientDrawable();
+        bg.setShape(GradientDrawable.RECTANGLE);
+        bg.setCornerRadius(20);
+        bg.setStroke(3, color);
+        bg.setColor(Color.TRANSPARENT);
+
+        holder.tvStatus.setTextColor(color);
+        holder.tvStatus.setBackground(bg);
+        holder.tvPrice.setText(String.format("%,.0fđ", item.getTotalPrice()));
         var img = item.getOrderItems().get(0).getProductImage();
         if (img != null && !img.isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -78,7 +102,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
         }
 
         holder.btnDetail.setOnClickListener(v -> {
-            if (listener != null) listener.onDetailClick(item);
+            if (listener != null)
+                listener.onDetailClick(item);
+            Intent intent = new Intent(context, OrderDetailActivity.class);
+            intent.putExtra("orderId", item.getId());
+            context.startActivity(intent);
         });
     }
 
@@ -90,7 +118,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
     static class VH extends RecyclerView.ViewHolder {
         ImageView img;
         TextView tvName, tvDate, tvStatus, tvPrice;
-        Button btnInvoice, btnDetail;
+        Button btnDetail;
 
         public VH(@NonNull View itemView) {
             super(itemView);

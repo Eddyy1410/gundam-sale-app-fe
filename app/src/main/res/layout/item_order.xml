@@ -59,7 +59,8 @@
                     android:background="@drawable/badge_rounded"
                     android:padding="6dp"
                     android:textColor="@color/muted_green_text"
-                    android:layout_marginTop="6dp"/>
+                    android:layout_marginTop="6dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_price"

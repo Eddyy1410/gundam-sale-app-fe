@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- .MyAppication = com.huyntd.superapp.gundamshop_mobilefe.MyApplication -->
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -16,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GundamShopMobileFE"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activities.OrderDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.OrderHistoryActivity"
             android:exported="false" />

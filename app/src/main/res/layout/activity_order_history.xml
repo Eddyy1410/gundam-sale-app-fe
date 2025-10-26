@@ -99,7 +99,7 @@
                         android:background="@drawable/badge_rounded"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:text="S-NULL"
+                        android:text="MEMBER"
                         android:textColor="@color/brand_red"
                         android:textSize="@dimen/small_text" />
                 </LinearLayout>

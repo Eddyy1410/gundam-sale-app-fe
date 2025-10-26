@@ -15,10 +15,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.OrdersAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.UserViewModel;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
     ImageView imgAvatar;
 
     OrderViewModel orderViewModel;
+    UserViewModel userViewModel;
+    int userId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,37 +62,57 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         // 🔹 Lấy ViewModel (chuẩn AndroidX)
         orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
 
         // 🔹 Gọi API qua ViewModel
-        int userId = 2; // hoặc lấy từ SharedPreferences
-        orderViewModel.getOrdersByUserId(userId).observe(this, orders -> {
-            if (orders != null && !orders.isEmpty()) {
-                tvOrdersCount.setText(String.valueOf(orders.size()));
+        //1. Api lấy thông tin người dùng
+        userViewModel.getInfo().observe(this, userResponse -> {
+            if (userResponse != null){
+                Glide.with(this)
+                        .load("https://i.pinimg.com/736x/30/a8/49/30a8490ff409df33d1e23702cf2c4aa8.jpg")
+                        .override(300, 300) // fix size 200x200 pixel
+                        .centerCrop()       // cắt giữa hình để không méo
+                        .into(imgAvatar);
 
-                // ✅ Tính tổng tiền (nếu có field totalPrice trong OrderResponse)
-                double total = 0;
-                for (OrderResponse o : orders) {
-                    total += o.getTotalPrice();
-                }
-                tvTotal.setText(String.format("%,.0fđ", total));
+                tvName.setText(userResponse.getFullName());
+                tvPhone.setText(userResponse.getPhone());
+                userId = userResponse.getId();
 
-                adapter = new OrdersAdapter(
-                        this,
-                        orders,
-                        new OrdersAdapter.OnItemClickListener() {
-                            @Override
-                            public void onDetailClick(OrderResponse item) {
-                                // TODO: mở chi tiết đơn hàng
-                            }
+                // 2. Api lấy lịch sử mua hàng
+                orderViewModel.getOrdersByUserId(userId).observe(this, orders -> {
+                    if (orders != null && !orders.isEmpty()) {
+                        tvOrdersCount.setText(String.valueOf(orders.size()));
+
+                        // ✅ Tính tổng tiền (nếu có field totalPrice trong OrderResponse)
+                        double total = 0;
+                        for (OrderResponse o : orders) {
+                            total += o.getTotalPrice();
                         }
-                );
+                        tvTotal.setText(String.format("%,.0fđ", total));
 
 
-                rvOrders.setLayoutManager(new LinearLayoutManager(this));
-                rvOrders.setAdapter(adapter);
-            } else {
-                Log.d("OrderHistory", "Không có đơn hàng nào.");
+                        adapter = new OrdersAdapter(
+                                this,
+                                orders,
+                                new OrdersAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onDetailClick(OrderResponse item) {
+                                        // TODO: mở chi tiết đơn hàng
+                                    }
+                                }
+                        );
+
+
+                        rvOrders.setLayoutManager(new LinearLayoutManager(this));
+                        rvOrders.setAdapter(adapter);
+                    } else {
+                        Log.d("OrderHistory", "Không có đơn hàng nào.");
+                    }
+                });
             }
         });
+
+
     }
 }
