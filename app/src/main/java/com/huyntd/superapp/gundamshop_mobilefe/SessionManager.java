@@ -84,6 +84,10 @@ public class SessionManager {
         return this.role;
     }
 
+    public String getUserId(){
+        return this.userId;
+    }
+
     public boolean isLoggedIn() {
         return getAuthToken() != null;
     }
