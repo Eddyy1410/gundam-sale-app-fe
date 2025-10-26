@@ -30,7 +30,7 @@
                 android:id="@+id/searchUserIb"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/search_black"
+                android:src="@drawable/ic_search_black"
                 app:tint="@color/colorPrimary"
                 android:background="@android:color/transparent"
                 android:layout_alignParentEnd="true"

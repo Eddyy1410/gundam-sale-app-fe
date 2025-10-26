@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ProductDetailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductListAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
@@ -51,11 +52,12 @@ public class ProductListFragment extends Fragment {
         RecyclerView rvProducts = view.findViewById(R.id.rvProducts);
         EditText etSearch = view.findViewById(R.id.etSearch);
         ImageView ivCart = view.findViewById(R.id.ivCart);
+        ImageView ivChat = view.findViewById(R.id.ivChat);
 
         // Setup RecyclerView
         adapter = new ProductListAdapter();
 
-//        thêm listener
+        //thêm listener
         adapter.setOnItemClickListener(product -> {
             Intent intent = new Intent(requireContext(), ProductDetailActivity.class);
             intent.putExtra("product_id", product.getId());
@@ -103,6 +105,13 @@ public class ProductListFragment extends Fragment {
                         // startActivity(new Intent(requireContext(), CartActivity.class));
                 {}
         );
+
+        ivChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ChatActivity.class));
+            }
+        });
 
         return view;
     }

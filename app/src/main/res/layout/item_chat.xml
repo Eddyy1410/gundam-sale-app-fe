@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="4dp"
             android:background="@color/colorGray01"
-            android:src="@drawable/person_white"
+            android:src="@drawable/ic_person_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

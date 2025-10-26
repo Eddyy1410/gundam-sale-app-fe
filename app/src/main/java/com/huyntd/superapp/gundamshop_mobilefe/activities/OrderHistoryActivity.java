@@ -3,6 +3,7 @@ package com.huyntd.superapp.gundamshop_mobilefe.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
     TextView tvOrdersCount, tvTotal, tvName, tvPhone;
     ImageView imgAvatar;
 
+    ImageButton btnBack;
+
     OrderViewModel orderViewModel;
     UserViewModel userViewModel;
     int userId = 0;
@@ -59,11 +62,18 @@ public class OrderHistoryActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tv_name);
         tvPhone = findViewById(R.id.tv_phone);
         imgAvatar = findViewById(R.id.img_avatar);
+        btnBack = findViewById(R.id.btn_back);
 
         // 🔹 Lấy ViewModel (chuẩn AndroidX)
         orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // 🔹 Gọi API qua ViewModel
         //1. Api lấy thông tin người dùng

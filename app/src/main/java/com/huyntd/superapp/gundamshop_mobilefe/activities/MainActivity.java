@@ -19,7 +19,6 @@ import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ChatsListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
-import com.huyntd.superapp.gundamshop_mobilefe.fragments.HomeFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
 
@@ -57,21 +56,21 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println("Start hereeeee");
 
-        binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        binding.bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 int itemId = item.getItemId();
 
-                if (itemId == R.id.item_home){
+                if (itemId == R.id.nav_home){
                     System.out.println("Home hereeeee");
                     showProductListFragment();
-                } else if (itemId == R.id.item_chats) {
-                    startChatActivity();
-                } else if (itemId == R.id.item_favorite) {
-                    System.out.println("Fav hereeeee");
-                    showFavoriteListFragment();
-                } else if (itemId == R.id.item_profile) {
+                } else if (itemId == R.id.nav_map) {
+//                    startChatActivity();
+                } else if (itemId == R.id.nav_notification) {
+                    System.out.println("Notification here");
+//                    showFavoriteListFragment();
+                } else if (itemId == R.id.nav_profile) {
                     System.out.println("Profile hereeeee");
                     showProfileFragment();
                 }

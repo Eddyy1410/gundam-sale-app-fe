@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
@@ -27,14 +28,23 @@ public class ProfileFragment extends Fragment {
         // Inflate layout và gán vào biến view
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // Lấy button từ view
-        Button btnClick = view.findViewById(R.id.button);
+        LinearLayout orderHistoryLL = view.findViewById(R.id.orderHistoryLL);
 
-        // Gán sự kiện click
-        btnClick.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Button clicked!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getActivity(), OrderHistoryActivity.class));
+        orderHistoryLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), OrderHistoryActivity.class));
+            }
         });
+
+        // Lấy button từ view
+//        Button btnClick = view.findViewById(R.id.button);
+//
+//        // Gán sự kiện click
+//        btnClick.setOnClickListener(v -> {
+//            Toast.makeText(getContext(), "Button clicked!", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(getActivity(), OrderHistoryActivity.class));
+//        });
 
         return view;
     }

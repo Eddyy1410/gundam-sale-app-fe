@@ -30,7 +30,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginVertical="15dp"
             android:background="?attr/colorOnPrimary"
-            android:src="@drawable/person_black"
+            android:src="@drawable/ic_person_black"
             app:shapeAppearanceOverlay="@style/ImageStyle_Circle"/>
 
         <TextView
@@ -84,7 +84,7 @@
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
             app:passwordToggleEnabled="true"
-            app:startIconDrawable="@drawable/lock_white"
+            app:startIconDrawable="@drawable/ic_lock_white"
             android:layout_below="@+id/emailTil">
 
             <EditText
@@ -107,7 +107,7 @@
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
             app:passwordToggleEnabled="true"
-            app:startIconDrawable="@drawable/lock_white"
+            app:startIconDrawable="@drawable/ic_lock_white"
             android:layout_below="@+id/passwordTil">
 
             <EditText
@@ -129,7 +129,7 @@
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
-            app:startIconDrawable="@drawable/person_name_black"
+            app:startIconDrawable="@drawable/ic_person_name_black"
             android:layout_below="@+id/cPasswordTil">
 
             <EditText
@@ -151,7 +151,7 @@
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
-            app:startIconDrawable="@drawable/phone_black"
+            app:startIconDrawable="@drawable/ic_phone_black"
             android:layout_below="@+id/nameTil">
 
             <EditText
@@ -179,7 +179,7 @@
             android:minHeight="@dimen/m_button_height"
             android:text="Register"
             android:layout_alignParentBottom="true"
-            app:icon="@drawable/key_white"/>
+            app:icon="@drawable/ic_key_white"/>
 
     </RelativeLayout>
     
