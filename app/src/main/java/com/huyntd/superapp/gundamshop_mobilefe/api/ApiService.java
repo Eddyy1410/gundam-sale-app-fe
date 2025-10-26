@@ -33,6 +33,7 @@ public interface ApiService {
 //            .create(ApiService.class);
 
     //-------------------------------AUTHENTICATION--------------------------------------
+    // Mấy cái login, register ko cần @SkipAuth. Do cơ chế bên ApiClient ko có token thì ko cần auth
     @POST("auth/log-in")
     Call<ApiResponse<AuthenticationResponse>> login(@Body AuthenticationRequest request);
 
@@ -44,6 +45,7 @@ public interface ApiService {
 
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")
+    @SkipAuth
     Call<ApiResponse<PageResponse<ProductResponse>>> getProducts();
 
     @GET("api/products/{id}")

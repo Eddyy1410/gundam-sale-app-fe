@@ -17,6 +17,8 @@ public class SessionManager {
 
     private static final String PREF_NAME = "GundamShopSession";
     private static final String KEY_AUTH_TOKEN = "auth_token";
+    private String userId;
+    private String role;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -24,9 +26,6 @@ public class SessionManager {
 
     private final MyUtils myUtils = new MyUtils();
 
-
-
-    // Singleton Pattern
     private static SessionManager instance;
 
     private SessionManager(Context context) {
@@ -35,73 +34,62 @@ public class SessionManager {
         editor = sharedPreferences.edit();
     }
 
-    public static synchronized SessionManager getInstance(Context context) {
+    // Từ khóa synchronized đảm bảo rằng chỉ một luồng được phép thực thi nội dung của phương thức này tại một thời điểm.
+    // public static synchronized SessionManager getInstance(Context context) {
+    public static SessionManager getInstance(Context context) {
+        // design pattern Singleton
         if (instance == null) {
-            instance = new SessionManager(context);
+            // Chỉ khóa khi instance thực sự null
+            // thay vì synchronized đặt ở ngoài thì cứ getInstance thì sẽ phải chờ bất kể instance đó null hay ko null --> giảm Hiệu Suất
+            synchronized (SessionManager.class) {
+                // Lần kiểm tra thứ hai (trong vùng khóa)
+                if (instance == null) {
+                    instance = new SessionManager(context);
+                }
+            }
         }
         return instance;
     }
 
     // --- Các phương thức quan trọng ---
+    private void saveUserDate(String token) {
+        if (token == null) {
+            userId = null;
+            role = null;
+            return;
+        }
+
+        JSONObject payload = myUtils.decodeJwtPayload(token);
+        if (payload != null) {
+            this.userId = payload.optString("id", null);
+            this.role = payload.optString("role", null);
+        }
+    }
 
     public void saveAuthToken(String token) {
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.apply(); // Dùng apply() để lưu bất đồng bộ
         ApiClient.setToken(token);
+        saveUserDate(token);
         Log.i("Token", token);
+        Log.i("id: ", this.userId);
+        Log.i("role: ", this.role);
     }
 
     public String getAuthToken() {
         return sharedPreferences.getString(KEY_AUTH_TOKEN, null); // Trả về null nếu không có token
     }
 
-    public void clearSession() {
-        editor.clear();
-        editor.apply();
+    public String getRole(){
+        return this.role;
     }
 
     public boolean isLoggedIn() {
         return getAuthToken() != null;
     }
 
-    public String getRole(){
-        String token = getAuthToken();
-        if (token == null) return null;
-
-        JSONObject payload = myUtils.decodeJwtPayload(token);
-        if (payload == null) return null;
-
-        return payload.optString("role", null); // Khi payload chỉ có 1 role
+    public void clearSession() {
+        editor.clear();
+        editor.apply();
     }
-
-
-    public boolean hasRole(String role) {
-        String token = getAuthToken();
-        if (token == null) return false;
-
-        JSONObject payload = myUtils.decodeJwtPayload(token);
-        if (payload == null) return false;
-
-        // Trường hợp token có mảng "roles": ["ADMIN", "USER"]
-        if (payload.has("roles")) {
-            JSONArray rolesArray = payload.optJSONArray("roles");
-            if (rolesArray != null) {
-                for (int i = 0; i < rolesArray.length(); i++) {
-                    try {
-                        if (role.equalsIgnoreCase(rolesArray.getString(i))) {
-                            return true;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        // Trường hợp token chỉ có "role": "ADMIN"
-        String singleRole = payload.optString("role", null);
-        return role.equalsIgnoreCase(singleRole);
-    }
-
-
 }

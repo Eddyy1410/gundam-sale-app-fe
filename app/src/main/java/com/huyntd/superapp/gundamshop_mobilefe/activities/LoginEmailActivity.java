@@ -70,6 +70,7 @@ public class LoginEmailActivity extends AppCompatActivity {
                                 String token = successResponse.getResult().getToken();
                                 SessionManager.getInstance(LoginEmailActivity.this).saveAuthToken(token);
                                 Toast.makeText(LoginEmailActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, "onResponse: "+response.body().toString());
                                 startMainActivity();
                             } else {
                                 // Lỗi logic từ server (Ví dụ: success=false nhưng HTTP 200 OK)
