@@ -20,20 +20,20 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    // Gson gson = new GsonBuilder()
-    // .setDateFormat("yyyy-MM-dd HH:mm:ss")
-    // .create();
+//    Gson gson = new GsonBuilder()
+//            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+//            .create();
 
     // 2. KHỞI TẠO RETROFIT
-    // ApiService apiService = new Retrofit.Builder()
-    // // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN
-    // adapter Wi-Fi
-    // .baseUrl("http://192.168.137.1:8080/")
-    // .addConverterFactory(GsonConverterFactory.create())
-    // .build()
-    // .create(ApiService.class);
+//    ApiService apiService = new Retrofit.Builder()
+//            // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
+//            .baseUrl("http://192.168.137.1:8080/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApiService.class);
 
-    // -------------------------------AUTHENTICATION--------------------------------------
+    //-------------------------------AUTHENTICATION--------------------------------------
+    // Mấy cái login, register ko cần @SkipAuth. Do cơ chế bên ApiClient ko có token thì ko cần auth
     @POST("auth/log-in")
     Call<ApiResponse<AuthenticationResponse>> login(@Body AuthenticationRequest request);
 
@@ -43,11 +43,9 @@ public interface ApiService {
     @POST("user/")
     Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 
-    @GET("user/myInfo")
-    Call<ApiResponse<UserResponse>> getInfo();
-
-    // -----------------------------------PRODUCT------------------------------------------
+    //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")
+    @SkipAuth
     Call<ApiResponse<PageResponse<ProductResponse>>> getProducts();
 
     @GET("api/products/{id}")
