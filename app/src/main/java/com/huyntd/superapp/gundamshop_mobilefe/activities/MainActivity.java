@@ -6,8 +6,10 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -34,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         //Chú ý dòng này!!!!! nếu dùng binding
         //setContentView(R.layout.activity_main);
         setContentView(binding.getRoot());
+
+        // Cho phép layout phủ dưới status bar (fix cho Pixel, Android 12+)
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.brand_red)); // hoặc mã hex
 
         // --- Tránh vùng camera (notch) ---
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {

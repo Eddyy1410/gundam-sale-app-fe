@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ProfileFragment">
-    
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/FrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F2F2F2">
@@ -14,10 +15,10 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <!-- This LinearLayout holds all the sections vertically -->
             <LinearLayout
@@ -40,9 +41,9 @@
                         android:id="@+id/iv_avatar"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_launcher_foreground"
                         android:background="@android:color/transparent"
                         android:padding="8dp"
+                        android:src="@drawable/ic_launcher_foreground"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,10 +80,10 @@
                         android:layout_height="18dp"
                         android:layout_marginStart="8dp"
                         android:src="@drawable/ic_profile_eye"
-                        app:tint="#888888"
                         app:layout_constraintBottom_toBottomOf="@id/tv_user_phone"
                         app:layout_constraintStart_toEndOf="@id/tv_user_phone"
-                        app:layout_constraintTop_toTopOf="@id/tv_user_phone" />
+                        app:layout_constraintTop_toTopOf="@id/tv_user_phone"
+                        app:tint="#888888" />
 
                     <!-- Member Tag -->
                     <TextView
@@ -101,7 +102,7 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toEndOf="@id/iv_avatar"
-                        app:layout_constraintTop_toBottomOf="@id/tv_user_phone"/>
+                        app:layout_constraintTop_toBottomOf="@id/tv_user_phone" />
 
                     <!-- Divider 1 -->
                     <View
@@ -129,9 +130,9 @@
                         android:layout_height="24dp"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_nav_cart"
-                        app:tint="#E53935"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/divider1" />
+                        app:layout_constraintTop_toBottomOf="@id/divider1"
+                        app:tint="#E53935" />
 
                     <TextView
                         android:id="@+id/tv_orders_count"
@@ -163,9 +164,9 @@
                         android:layout_height="24dp"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_profile_points"
-                        app:tint="#E53935"
                         app:layout_constraintStart_toStartOf="@id/guideline_stats"
-                        app:layout_constraintTop_toBottomOf="@id/divider1" />
+                        app:layout_constraintTop_toBottomOf="@id/divider1"
+                        app:tint="#E53935" />
 
                     <TextView
                         android:id="@+id/tv_points_count"
@@ -190,85 +191,85 @@
                         app:layout_constraintStart_toStartOf="@id/iv_points"
                         app:layout_constraintTop_toBottomOf="@id/iv_points" />
 
-<!--                    &lt;!&ndash; Divider 2 &ndash;&gt;-->
-<!--                    <View-->
-<!--                        android:id="@+id/divider2"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="1dp"-->
-<!--                        android:layout_marginTop="16dp"-->
-<!--                        android:background="#E0E0E0"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/tv_orders_label" />-->
+                    <!--                    &lt;!&ndash; Divider 2 &ndash;&gt;-->
+                    <!--                    <View-->
+                    <!--                        android:id="@+id/divider2"-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="1dp"-->
+                    <!--                        android:layout_marginTop="16dp"-->
+                    <!--                        android:background="#E0E0E0"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/tv_orders_label" />-->
 
-<!--                    &lt;!&ndash; Barcode Label &ndash;&gt;-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_barcode_label"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="16dp"-->
-<!--                        android:text="Vui lòng đưa mã này cho nhân viên để hưởng ưu đãi"-->
-<!--                        android:textColor="@android:color/black"-->
-<!--                        android:textSize="12sp"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/divider2" />-->
+                    <!--                    &lt;!&ndash; Barcode Label &ndash;&gt;-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/tv_barcode_label"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="16dp"-->
+                    <!--                        android:text="Vui lòng đưa mã này cho nhân viên để hưởng ưu đãi"-->
+                    <!--                        android:textColor="@android:color/black"-->
+                    <!--                        android:textSize="12sp"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/divider2" />-->
 
-<!--                    &lt;!&ndash; Barcode Placeholder (We can't generate a real one easily) &ndash;&gt;-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_barcode_placeholder"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="80dp"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:background="#E0E0E0"-->
-<!--                        android:gravity="center"-->
-<!--                        android:text="[BARCODE PLACEHOLDER]"-->
-<!--                        android:textColor="#888888"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_label" />-->
+                    <!--                    &lt;!&ndash; Barcode Placeholder (We can't generate a real one easily) &ndash;&gt;-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/tv_barcode_placeholder"-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="80dp"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:background="#E0E0E0"-->
+                    <!--                        android:gravity="center"-->
+                    <!--                        android:text="[BARCODE PLACEHOLDER]"-->
+                    <!--                        android:textColor="#888888"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_label" />-->
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_barcode_number"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:text="6810"-->
-<!--                        android:textColor="@android:color/black"-->
-<!--                        android:textSize="20sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_placeholder" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/tv_barcode_number"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:text="6810"-->
+                    <!--                        android:textColor="@android:color/black"-->
+                    <!--                        android:textSize="20sp"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_placeholder" />-->
 
-<!--                    &lt;!&ndash; Barcode Timer &ndash;&gt;-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_barcode_timer"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:text="Mã sẽ thay đổi sau 02:22"-->
-<!--                        android:textColor="@android:color/darker_gray"-->
-<!--                        android:textSize="12sp"-->
-<!--                        app:layout_constraintEnd_toStartOf="@id/tv_qr_switch"-->
-<!--                        app:layout_constraintHorizontal_chainStyle="packed"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_number" />-->
+                    <!--                    &lt;!&ndash; Barcode Timer &ndash;&gt;-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/tv_barcode_timer"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:text="Mã sẽ thay đổi sau 02:22"-->
+                    <!--                        android:textColor="@android:color/darker_gray"-->
+                    <!--                        android:textSize="12sp"-->
+                    <!--                        app:layout_constraintEnd_toStartOf="@id/tv_qr_switch"-->
+                    <!--                        app:layout_constraintHorizontal_chainStyle="packed"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_number" />-->
 
-<!--                    &lt;!&ndash; QR Switch &ndash;&gt;-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_qr_switch"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginStart="8dp"-->
-<!--                        android:text="Chuyển sang QRCode"-->
-<!--                        android:textColor="#E53935"-->
-<!--                        android:textSize="12sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        app:layout_constraintBottom_toBottomOf="@id/tv_barcode_timer"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toEndOf="@id/tv_barcode_timer"-->
-<!--                        app:layout_constraintTop_toTopOf="@id/tv_barcode_timer" />-->
+                    <!--                    &lt;!&ndash; QR Switch &ndash;&gt;-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/tv_qr_switch"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginStart="8dp"-->
+                    <!--                        android:text="Chuyển sang QRCode"-->
+                    <!--                        android:textColor="#E53935"-->
+                    <!--                        android:textSize="12sp"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        app:layout_constraintBottom_toBottomOf="@id/tv_barcode_timer"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toEndOf="@id/tv_barcode_timer"-->
+                    <!--                        app:layout_constraintTop_toTopOf="@id/tv_barcode_timer" />-->
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
