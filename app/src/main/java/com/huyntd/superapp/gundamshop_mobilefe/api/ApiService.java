@@ -64,7 +64,7 @@ public interface ApiService {
     @GET("order/user/{id}")
     Call<ApiResponse<PageResponse<OrderResponse>>> getOrdersByUserId(@Path("id") int id);
 
-    @GET("order/user/{id}")
+    @GET("order/status/user/{id}")
     Call<ApiResponse<PageResponse<OrderResponse>>> getOrdersByStatusAndUserId(@Path("id") int id,
             @Query("status") String status);
 

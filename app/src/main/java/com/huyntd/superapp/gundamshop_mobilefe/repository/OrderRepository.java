@@ -108,6 +108,52 @@ public class OrderRepository {
         return data;
     }
 
+    public LiveData<List<OrderResponse>> getOrdersByStatus(int userId, String status) {
+        MutableLiveData<List<OrderResponse>> data = new MutableLiveData<>();
+
+        // Gọi API với page = 0, size = 100 (hoặc tùy theo BE config)
+        ApiClient.getApiService().getOrdersByStatusAndUserId(userId, status)
+                .enqueue(new Callback<ApiResponse<PageResponse<OrderResponse>>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse<PageResponse<OrderResponse>>> call,
+                                           Response<ApiResponse<PageResponse<OrderResponse>>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            ApiResponse<PageResponse<OrderResponse>> apiResponse = response.body();
+
+                            Log.d("OrderRepository", "✅ Full Response: " + new Gson().toJson(apiResponse));
+
+                            if (apiResponse.isSuccess()
+                                    && apiResponse.getResult() != null
+                                    && apiResponse.getResult().getContent() != null) {
+
+                                data.setValue(apiResponse.getResult().getContent());
+                                Log.d("OrderRepository", "✅ Loaded orders successfully for status: " + status);
+
+                            } else {
+                                data.setValue(Collections.emptyList());
+                                Log.w("OrderRepository", "⚠️ No orders found or API returned empty content");
+                            }
+
+                        } else {
+                            try {
+                                Log.e("OrderRepository", "❌ API failed: " + response.message() +
+                                        " | Error body: " + response.errorBody().string());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse<PageResponse<OrderResponse>>> call, Throwable t) {
+                        Log.e("OrderRepository", "🚨 Error loading orders by status: " + t.getMessage(), t);
+                    }
+                });
+
+        return data;
+    }
+
+
 
 }
 

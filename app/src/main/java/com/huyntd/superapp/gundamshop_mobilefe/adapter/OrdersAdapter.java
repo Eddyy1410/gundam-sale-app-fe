@@ -74,7 +74,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
         holder.tvDate.setText(item.getOrderDate()+"");
         holder.tvStatus.setText(item.getStatus());
 
-        int color = Color.parseColor("#FFD700");
+        int color = Color.parseColor("#ccac00");
         var status = item.getStatus();
         if (status.equals("CANCELLED") || status.equals("RETURNED")) {
             color = Color.parseColor("#FF0000"); // đỏ

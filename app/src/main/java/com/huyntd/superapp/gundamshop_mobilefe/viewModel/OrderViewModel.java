@@ -18,5 +18,10 @@ public class OrderViewModel extends ViewModel {
     public LiveData<OrderResponse> getOrderDetail(int orderId){
         return orderRepository.getOrdersById(orderId);
     }
+
+    public LiveData<List<OrderResponse>> getOrdersByStatus(int userId, String status) {
+        return orderRepository.getOrdersByStatus(userId, status);
+    }
+
 }
 
