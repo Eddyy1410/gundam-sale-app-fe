@@ -2,6 +2,7 @@ package com.huyntd.superapp.gundamshop_mobilefe.repository;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -108,6 +109,38 @@ public class OrderRepository {
         return data;
     }
 
+    public void getOrdersToday(
+            int page,
+            int size,
+            String sortBy,
+            String sortDir,
+            @Nullable String status,
+            RepositoryCallback<ApiResponse<PageResponse<OrderResponse>>> callback
+    ) {
+        Call<ApiResponse<PageResponse<OrderResponse>>> call = ApiClient.getApiService().getOrdersToday(page, size, sortBy, sortDir, status);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<ApiResponse<PageResponse<OrderResponse>>> call,
+                                   Response<ApiResponse<PageResponse<OrderResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onError("Response unsuccessful or null body");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<PageResponse<OrderResponse>>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+
+
+    }
+    public interface RepositoryCallback<T> {
+        void onSuccess(T result);
+        void onError(String error);
+    }
 
 }
 

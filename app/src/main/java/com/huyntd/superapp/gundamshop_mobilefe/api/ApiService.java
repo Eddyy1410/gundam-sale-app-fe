@@ -71,6 +71,15 @@ public interface ApiService {
     @GET("order/{id}")
     Call<ApiResponse<OrderResponse>> getOrderDetail(@Path("id") int id);
 
+    @GET("order/today")
+    Call<ApiResponse<PageResponse<OrderResponse>>> getOrdersToday(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("sortBy") String sortBy,
+            @Query("sortDir") String sortDir,
+            @Query("status") String status
+    );
+
     // --------------------------------CONVERSATION-------------------------------------
     // @GET("api/conversations")
     // Call<ApiResponse<ConversationResponse>> getConversations();

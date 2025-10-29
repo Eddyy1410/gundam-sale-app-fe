@@ -32,6 +32,12 @@ public class SessionManager {
         this.context = context.getApplicationContext(); // Dùng application context để tránh memory leak
         sharedPreferences = this.context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+        String savedToken = sharedPreferences.getString(KEY_AUTH_TOKEN, null);
+        if(savedToken != null){
+            ApiClient.setToken(savedToken);
+            decodeAndCacheUserData(savedToken);
+        }
     }
 
     // Từ khóa synchronized đảm bảo rằng chỉ một luồng được phép thực thi nội dung của phương thức này tại một thời điểm.
@@ -74,6 +80,23 @@ public class SessionManager {
         Log.i("Token", token);
         Log.i("id: ", this.userId);
         Log.i("role: ", this.role);
+    }
+
+    private void decodeAndCacheUserData(String token) {
+        if (token == null) {
+            userId = null;
+            role = null;
+            return;
+        }
+
+        JSONObject payload = myUtils.decodeJwtPayload(token);
+        if (payload != null) {
+            this.userId = payload.optString("id", null);
+            this.role = payload.optString("role", null);
+            Log.i("SessionManager", "Decoded: id=" + userId + ", role=" + role);
+        } else {
+            Log.w("SessionManager", "Cannot decode JWT payload!");
+        }
     }
 
     public String getAuthToken() {
