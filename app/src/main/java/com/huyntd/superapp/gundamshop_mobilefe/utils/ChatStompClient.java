@@ -17,7 +17,7 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 public class ChatStompClient {
     static final String TAG = "CHAT_STOMP_CLIENT";
     final String jwtToken;
-    final String serverUrl = "ws://192.168.137.1:8080/ws-native";
+    final String serverUrl = "ws://10.87.28.61:8080/ws-native";
 
     // Phải thêm maven { url = uri("https://jitpack.io") } trong settings.gradle.kts (Project Settings)
     // dependencyResolutionManagement {
@@ -100,8 +100,8 @@ public class ChatStompClient {
 
         String messagePayload = String.format("{\"conversationId\": %d, \"content\": \"%s\"}", conversationId, content);
 
-        // Gửi Frame SEND đến /app/send.message
-        stompClient.send("/app/send.message", messagePayload).subscribe(
+        // Gửi Frame SEND đến /app/chat
+        stompClient.send("/app/chat", messagePayload).subscribe(
                 () -> Log.d(TAG, "Message sent successfully"),
                 error -> Log.e(TAG, "Error sending message: " + error.getMessage())
         );

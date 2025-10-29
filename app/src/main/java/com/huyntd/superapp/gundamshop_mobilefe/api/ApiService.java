@@ -5,11 +5,14 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -74,4 +77,8 @@ public interface ApiService {
     // --------------------------------CONVERSATION-------------------------------------
     // @GET("api/conversations")
     // Call<ApiResponse<ConversationResponse>> getConversations();
+
+    // ----------------------------------MESSAGE----------------------------------------
+    @GET("api/messages/{customerId}")
+    Call<ApiResponse<List<MessageResponse>>> getMessages(@Path("customerId") int id);
 }
