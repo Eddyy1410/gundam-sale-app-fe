@@ -20,4 +20,5 @@ public class ConversationResponse {
     private String latestMessageContent;
     private Date latestMessageSentAt;
     private int customerId;
+    private int lastestSenderId;
 }

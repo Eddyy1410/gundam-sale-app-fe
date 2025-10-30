@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     // này check ipconfig -> thay localhost = IPv4 Address của Wireless LAN adapter Wi-Fi
-    private static final String BASE_URL = "http://192.168.1.42:8080/";
+    private static final String BASE_URL = "http://192.168.137.1:8080/";
 
     // Biến instance của Retrofit (ban đầu là null) (1)
     private static Retrofit retrofit = null;
@@ -53,13 +53,13 @@ public class ApiClient {
                 });
             }
 
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                    .create();
+//            Gson gson = new GsonBuilder()
+//                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
+//                    .create();
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addConverterFactory(GsonConverterFactory.create())
                     .client(httpClient.build())
                     .build();
         }
