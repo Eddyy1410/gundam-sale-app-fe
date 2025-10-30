@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -79,8 +80,26 @@ public interface ApiService {
             @Query("sortDir") String sortDir,
             @Query("status") String status
     );
+    @PUT("order/{id}/status")
+    Call<ApiResponse<OrderResponse>> updateOrderStatus(
+            @Path("id") int id,
+            @Query("status") String status
+    );
 
     // --------------------------------CONVERSATION-------------------------------------
     // @GET("api/conversations")
     // Call<ApiResponse<ConversationResponse>> getConversations();
+
+
+
+
+//    -------------------------------DASHBOARD--------------------------------------
+    @GET("/order/todays/count")
+    Call<ApiResponse<Long>> getTodaysOrderCount();
+
+    @GET("/order/pending/count")
+    Call<ApiResponse<Long>> getPendingOrdersCount();
+
+    @GET("/api/products/low-stock-count")
+    Call<Long> getLowStockCount(@Query("threshold") int threshold);
 }

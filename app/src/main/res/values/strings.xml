@@ -35,4 +35,16 @@
     <string name="title_activity_product_detail">ProductDetailActivity</string>
     <string name="add_to_cart">Thêm vào giỏ</string>
     <string name="mua_v_i_voucher_118_600">Mua với voucher 118.600₫</string>
+    <string name="title_quick_order">QuickOrder</string>
+    <string name="title_order_detail_staff">Order Detail Staff</string>
+
+    <string-array name="order_status_list">
+        <item>Chờ xử lý</item>
+        <item>Đang giao hàng</item>
+        <item>Đang vận chuyển</item>
+        <item>Đã giao hàng</item>
+        <item>Đã hủy</item>
+        <item>Bị trả lại</item>
+        <item>Đã hoàn tiền</item>
+    </string-array>
 </resources>

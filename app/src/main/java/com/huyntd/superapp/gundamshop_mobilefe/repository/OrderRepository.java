@@ -137,6 +137,31 @@ public class OrderRepository {
 
 
     }
+
+    public void updateOrderStatus(
+            int orderId,
+            String status,
+            RepositoryCallback<OrderResponse> callback
+    ) {
+        Call<ApiResponse<OrderResponse>> call = ApiClient.getApiService().updateOrderStatus(orderId, status);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<ApiResponse<OrderResponse>> call,
+                                   Response<ApiResponse<OrderResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Log.e("OrderRepository", "✅ Order status updated: " + new Gson().toJson(response.body()));
+                    callback.onSuccess(response.body().getResult());
+                } else {
+                    callback.onError("Response unsuccessful or null body");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<OrderResponse>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
     public interface RepositoryCallback<T> {
         void onSuccess(T result);
         void onError(String error);

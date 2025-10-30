@@ -30,6 +30,22 @@
             android:exported="false"
             android:label="@string/title_activity_product_list"
             android:theme="@style/Theme.GundamShopMobileFE" />
+<!--        <fragment-->
+<!--            android:name=".fragments.staff.QuickOrderFragment"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_quick_order"-->
+<!--            android:theme="@style/Theme.GundamShopMobileFE" />-->
+<!--        <fragment-->
+<!--            android:name=".fragments.staff.DashboardFragment"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_dashboard_staff"-->
+<!--            android:theme="@style/Theme.GundamShopMobileFE" />-->
+        <activity
+            android:name=".activities.OrderDetailStaffActivity"
+            android:exported="false"
+            android:label="@string/title_order_detail_staff"
+            android:theme="@style/Theme.GundamShopMobileFE" />
+
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false" />
