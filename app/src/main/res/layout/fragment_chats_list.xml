@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ChatsListFragment">
+    tools:context=".fragments.staff.ChatsListFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_edittext"
                 android:layout_margin="10dp"
-                android:hint="Find customer"
+                android:hint="Tìm tên khách hàng"
                 android:padding="10dp"
                 android:layout_toStartOf="@id/searchUserIb"/>
 
@@ -39,6 +39,7 @@
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatsListRV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/searchUserRl"
