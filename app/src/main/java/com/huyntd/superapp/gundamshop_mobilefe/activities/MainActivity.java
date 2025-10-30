@@ -20,7 +20,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
-import com.huyntd.superapp.gundamshop_mobilefe.fragments.ChatsListFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.ChatsListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
@@ -64,32 +64,7 @@ public class MainActivity extends AppCompatActivity {
             userRole = sessionManager.getRole();
         }
 
-        // show default
-//        showProductListFragment();
-
         System.out.println("Start hereeeee");
-
-//        binding.bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//
-//                int itemId = item.getItemId();
-//
-//                if (itemId == R.id.nav_home){
-//                    System.out.println("Home hereeeee");
-//                    showProductListFragment();
-//                } else if (itemId == R.id.nav_map) {
-////                    startChatActivity();
-//                } else if (itemId == R.id.nav_notification) {
-//                    System.out.println("Notification here");
-////                    showFavoriteListFragment();
-//                } else if (itemId == R.id.nav_profile) {
-//                    System.out.println("Profile hereeeee");
-//                    showProfileFragment();
-//                }
-//                return true;
-//            }
-//        });
 
         setupBottomNavigationForRole(userRole);
     }
@@ -125,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_orders) {
                     showQuickOrderFragment();
                     return true;
+                } else if (id == R.id.nav_chat) {
+                    showChatsListFragment();
+                    return true;
                 }
 //                } else if (id == R.id.nav_search) {
 //                    showProductSearchFragment();
-//                    return true;
-//                } else if (id == R.id.nav_chat) {
-//                    showConversationsFragment();
 //                    return true;
 //                } else if (id == R.id.nav_notify) {
 //                    showNotificationsFragment();
@@ -182,17 +157,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showChatsListFragment() {
-
-//        binding.toolbarTitleTv.setText("Chats");
-
-        ChatsListFragment chatsListFragment = new ChatsListFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(binding.fragmentsFL.getId(), chatsListFragment, "ChatsListFragment");
-        fragmentTransaction.commit();
-
-    }
-
     private void showFavoriteListFragment() {
 
 //        binding.toolbarTitleTv.setText("Favorites");
@@ -214,15 +178,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void handleShowChat() {
-        SessionManager sessionManager = SessionManager.getInstance(this);
-        String userRole = sessionManager.getRole();
-        if("STAFF".equalsIgnoreCase(userRole)){
-            showChatsListFragment();
-        } else if ("CUSTOMER".equalsIgnoreCase(userRole)) {
+//    private void handleShowChat() {
+//        SessionManager sessionManager = SessionManager.getInstance(this);
+//        String userRole = sessionManager.getRole();
+//        if("STAFF".equalsIgnoreCase(userRole)){
+//            showChatsListFragment();
+//        } else if ("CUSTOMER".equalsIgnoreCase(userRole)) {
 //            show
-        }
-    }
+//        }
+//    }
 
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
@@ -247,6 +211,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void showQuickOrderFragment() {
         replaceFragment(new QuickOrderFragment(), "QuickOrderFragment");
+    }
+
+    private void showChatsListFragment() {
+        replaceFragment(new ChatsListFragment(), "ChatsListFragment");
     }
 
     @Override

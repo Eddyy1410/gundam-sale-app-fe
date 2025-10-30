@@ -11,6 +11,8 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -102,4 +104,6 @@ public interface ApiService {
 
     @GET("/api/products/low-stock-count")
     Call<Long> getLowStockCount(@Query("threshold") int threshold);
+     @GET("api/conversations/list/{staffId}")
+     Call<ApiResponse<List<ConversationResponse>>> getConversations(@Path("staffId") int id);
 }
