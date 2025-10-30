@@ -35,4 +35,15 @@
     <string name="title_activity_product_detail">ProductDetailActivity</string>
     <string name="add_to_cart">Thêm vào giỏ</string>
     <string name="mua_v_i_voucher_118_600">Mua với voucher 118.600₫</string>
+
+    <string name="payment_success_icon">Biểu tượng thanh toán thành công</string>
+    <string name="payment_success_title">Đặt hàng thành công!</string>
+    <string name="payment_success_message">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Đơn hàng của bạn đang được xử lý.</string>
+    <string name="back_to_home">Quay về trang chủ</string>
+
+
+    <string name="payment_failed_icon">Biểu tượng thanh toán thất bại</string>
+    <string name="payment_failed_title">Đặt hàng thất bại</string>
+    <string name="payment_failed_message">Đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng kiểm tra lại thông tin và thử lại.</string>
+    <string name="try_again">Thử lại</string>
 </resources>

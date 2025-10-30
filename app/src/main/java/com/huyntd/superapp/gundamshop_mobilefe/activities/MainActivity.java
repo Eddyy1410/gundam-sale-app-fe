@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 //                    startChatActivity();
                 } else if (itemId == R.id.nav_notification) {
                     System.out.println("Notification here");
-//                    showFavoriteListFragment();
+                    showFavoriteListFragment();
                 } else if (itemId == R.id.nav_profile) {
                     System.out.println("Profile hereeeee");
                     showProfileFragment();
