@@ -5,6 +5,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
