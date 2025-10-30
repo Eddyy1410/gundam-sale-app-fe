@@ -2,6 +2,7 @@ package com.huyntd.superapp.gundamshop_mobilefe.api;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
@@ -49,6 +50,9 @@ public interface ApiService {
 
     @GET("user/myInfo")
     Call<ApiResponse<UserResponse>> getInfo();
+
+    @POST("/auth/logout")
+    Call<ApiResponse<Void>> logout(@Body LogoutRequest request);
 
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")

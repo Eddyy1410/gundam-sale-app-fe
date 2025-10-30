@@ -109,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_end="173dp" />
+                        app:layout_constraintGuide_percent="0.5013193" />
 
                     <!-- Orders Stat -->
                     <ImageView
@@ -607,18 +607,18 @@
                 <!-- ================================== -->
                 <!-- (NEW) Log Out Button -->
                 <!-- ================================== -->
-                <TextView
-                    android:id="@+id/tv_logout"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logoutTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_search_bar_white"
+                    android:backgroundTint="@color/white"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="Đăng xuất"
                     android:textColor="#E53935"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
 
                 <!-- Version Text (Updated to match screenshot) -->

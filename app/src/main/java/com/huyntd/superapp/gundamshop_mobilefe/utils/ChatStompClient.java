@@ -17,7 +17,7 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 public class ChatStompClient {
     static final String TAG = "CHAT_STOMP_CLIENT";
     final String jwtToken;
-    final String serverUrl = "ws://10.87.28.61:8080/ws-native";
+    final String serverUrl = "ws://192.168.137.1:8080/ws-native";
 
     // Phải thêm maven { url = uri("https://jitpack.io") } trong settings.gradle.kts (Project Settings)
     // dependencyResolutionManagement {

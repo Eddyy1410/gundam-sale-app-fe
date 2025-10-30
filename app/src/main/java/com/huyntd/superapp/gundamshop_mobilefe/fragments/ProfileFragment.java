@@ -1,5 +1,6 @@
 package com.huyntd.superapp.gundamshop_mobilefe.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,14 +17,28 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.LoginEmailActivity;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.MainActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.OrderHistoryActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.OrdersAdapter;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
+import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.UserViewModel;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
@@ -34,7 +49,10 @@ public class ProfileFragment extends Fragment {
     UserViewModel userViewModel;
 
     int userId = 0;
+    String TAG = "PROFILE_FRAGMENT_TAG";
+    ApiService apiService = ApiClient.getApiService();
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +123,57 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.logoutTv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                apiService.logout(LogoutRequest.builder()
+                        .token(SessionManager.getInstance(getActivity()).getAuthToken())
+                        .build()).enqueue(new Callback<ApiResponse<Void>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                        if (response.isSuccessful()) {
+                            // Trường hợp THÀNH CÔNG (HTTP 200)
+                            Toast.makeText(getActivity(), "Đang đăng xuất", Toast.LENGTH_SHORT).show();
+                            SessionManager.getInstance(getActivity()).clearSession();
+                            startActivity(new Intent(getActivity(), MainActivity.class));
+                        } else {
+                            // Trường hợp THẤT BẠI HTTP (404, 500, 401, v.v.)
+                            try {
+                                // 1. Lấy body lỗi dưới dạng chuỗi
+                                String errorJson = response.errorBody().string();
+
+                                // 2. Sử dụng Gson (hoặc Moshi) để chuyển chuỗi JSON lỗi thành ApiResponse
+                                // ==> Cần phải khởi tạo Gson và định nghĩa lại kiểu generic cho ApiResponse
+                                // Sử dụng Type: Type type = new TypeToken<ApiResponse<Object>>() {}.getType();
+                                // Hoặc đơn giản hơn, nếu bạn chỉ cần message:
+
+                                // SỬ DỤNG GSON ĐỂ PARSE LỖI:
+                                Gson gson = new Gson();
+                                ApiResponse<?> errorResponse = gson.fromJson(errorJson, ApiResponse.class);
+
+                                if (errorResponse != null && errorResponse.getMessage() != null) {
+                                    // Hiển thị thông báo lỗi từ Server (User not existed!)
+                                    Toast.makeText(getActivity(), errorResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(getActivity(), "Lỗi HTTP " + response.code(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing error body: ", e);
+                                Toast.makeText(getActivity(), "Lỗi không xác định.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                        Toast.makeText(getActivity(), "Error occured!", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "onFailure: ", t);
+                    }
+                });
+
+            }
+        });
 
         return view;
     }
