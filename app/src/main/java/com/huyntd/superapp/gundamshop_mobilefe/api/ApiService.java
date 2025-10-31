@@ -54,7 +54,7 @@ public interface ApiService {
     @POST("auth/google-android")
     Call<ApiResponse<AuthenticationResponse>> loginGoogle(@Body GoogleTokenRequest request);
 
-    @POST("user/")
+    @POST("user/register")
     Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 
     @GET("user/myInfo")
