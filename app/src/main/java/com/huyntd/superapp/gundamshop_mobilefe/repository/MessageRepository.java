@@ -25,14 +25,15 @@ import retrofit2.Response;
 public class MessageRepository {
 
     ApiService apiService;
-    SessionManager sessionManager;
+//    SessionManager sessionManager;
+    String customerId;
 
     String TAG = "MESSAGE_REPO_TAG";
 
     public LiveData<List<MessageResponse>> getMessages() {
         final MutableLiveData<List<MessageResponse>> data = new MutableLiveData<>();
 
-        apiService.getMessages(Integer.parseInt(sessionManager.getUserId())).enqueue(new Callback<ApiResponse<List<MessageResponse>>>() {
+        apiService.getMessages(Integer.parseInt(customerId)).enqueue(new Callback<ApiResponse<List<MessageResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<MessageResponse>>> call, Response<ApiResponse<List<MessageResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {

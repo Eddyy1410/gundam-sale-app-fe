@@ -68,6 +68,13 @@ public class ApiClient {
         return retrofit.create(ApiService.class);
     }
 
+    public static void clearApiClient() {
+        retrofit = null;
+        token = null;
+        Log.i("ApiClient", "Retrofit instance cleared after logout.");
+        // SessionManager.getInstance().clearAuthToken();
+    }
+
     // Provide an ApiService that never attaches Authorization header (for public endpoints)
     public static ApiService getUnauthService() {
         // Build a lightweight Retrofit instance without token interceptor

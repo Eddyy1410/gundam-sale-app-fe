@@ -1,26 +1,26 @@
 package com.huyntd.superapp.gundamshop_mobilefe.fragments.staff;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ConversationAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.FragmentChatsListBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.repository.ConversationRepository;
-import com.huyntd.superapp.gundamshop_mobilefe.utils.ChatStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ConversationViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.factory.ConversationViewModelFactory;
 
@@ -32,11 +32,17 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChatsListFragment extends Fragment {
     FragmentChatsListBinding binding;
-    ChatStompClient stompClient;
+    AppStompClient stompClient;
     final String TAG = "CHATS_LIST_FRAGMENT_TAG";
     ApiService apiService = ApiClient.getApiService();
     ConversationAdapter conversationAdapter;
     ConversationViewModel conversationViewModel;
+
+    // Khi 1 Fragment được tạo ra thì vòng đời mặc định sẽ bao gồm các callbacks của hệ thống Android
+    // onCreateView (1) --> Tạo giao diện (binding) trả về view gốc
+    // onViewCreated (2) --> ngay sau khi onCreateView hoàn thành View gốc được trả về
+
+    // Ngoài ra thì còn onChanged() --> Kích hoạt (tức thì nếu LiveData có dữ liệu, hoặc sau khi API hoàn tất).
 
     @Nullable
     @Override
@@ -44,7 +50,6 @@ public class ChatsListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // 1. Inflate layout bằng View Binding
         binding = FragmentChatsListBinding.inflate(inflater, container, false);
-
         // 2. TRẢ VỀ VIEW GỐC CỦA BINDING
         return binding.getRoot();
     }
@@ -52,12 +57,8 @@ public class ChatsListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Tất cả logic khởi tạo View (RecyclerView, Adapter, ViewModel, Listener) nên ở đây
         setupViewModel();
         setupRecyclerView();
-
-        // ... Lắng nghe LiveData
         observeViewModel();
     }
 
@@ -69,6 +70,14 @@ public class ChatsListFragment extends Fragment {
         // Sử dụng binding.tên_id_của_recyclerview
         binding.chatsListRV.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.chatsListRV.setAdapter(conversationAdapter);
+
+        conversationAdapter.setOnItemClickListener(conversation -> {
+            Toast.makeText(getActivity(), "customerID: "+conversation.getCustomerId()+", name: "+conversation.getCustomerName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), ChatActivity.class);
+            intent.putExtra("CUSTOMER_ID", String.valueOf(conversation.getCustomerId()));
+            intent.putExtra("CUSTOMER_NAME", conversation.getCustomerName());
+            startActivity(intent);
+        });
     }
 
     private void setupViewModel() {
@@ -79,9 +88,14 @@ public class ChatsListFragment extends Fragment {
         conversationViewModel = new ViewModelProvider(this, factory).get(ConversationViewModel.class);
     }
 
+    // onChanged() là callback hệ thống khác với observeViewModel()
+    // observeViewModel() (Phương thức của bạn) là hành động thiết lập sự lắng nghe (The Setup).
+    // onChanged() (Callback của Observer) là sự kiện phản ứng với sự thay đổi (The Reaction).
     private void observeViewModel() {
+        // gọi phương thức observeViewModel()
         conversationViewModel.getConversationList().observe(getViewLifecycleOwner(), conversations -> {
             if (conversations != null) {
+                // thiết lập hàm phản ứng onChanged
                 conversationAdapter.setConversations(conversations);
             }
         });

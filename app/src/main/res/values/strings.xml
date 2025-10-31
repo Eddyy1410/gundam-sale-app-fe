@@ -88,4 +88,15 @@
     <string name="label_password">Mật khẩu</string>
     <string name="label_confirm_password">Nhập lại mật khẩu</string>
     <string name="reset_pw_note">Mật khẩu tối thiểu có 6 kí tự, có ít nhất 1 chữ số và 1 chữ cái.</string>
+
+    <string name="payment_success_icon">Biểu tượng thanh toán thành công</string>
+    <string name="payment_success_title">Đặt hàng thành công!</string>
+    <string name="payment_success_message">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Đơn hàng của bạn đang được xử lý.</string>
+    <string name="back_to_home">Quay về trang chủ</string>
+
+
+    <string name="payment_failed_icon">Biểu tượng thanh toán thất bại</string>
+    <string name="payment_failed_title">Đặt hàng thất bại</string>
+    <string name="payment_failed_message">Đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng kiểm tra lại thông tin và thử lại.</string>
+    <string name="try_again">Thử lại</string>
 </resources>

@@ -27,11 +27,13 @@ import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.PersonalInfoFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.DashboardFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.QuickOrderFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 
 public class MainActivity extends AppCompatActivity {
     //View binding
     private ActivityMainBinding binding;
     private SessionManager sessionManager;
+    private AppStompClient stompClient;
 
     private String userRole;
 
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(0, bars.top, 0, 0);
             return insets;
         });
+
         sessionManager = SessionManager.getInstance(MainActivity.this);
         if (!sessionManager.isLoggedIn()) {
             startLoginOptionsActivity();
@@ -63,11 +66,12 @@ public class MainActivity extends AppCompatActivity {
             // Mà ApiClient chỉ được gán token thông qua login --> bị lỗi 1 số api cần bearer token
             ApiClient.setToken(SessionManager.getInstance(MainActivity.this).getAuthToken());
             userRole = sessionManager.getRole();
+            stompClient = AppStompClient.getInstance(SessionManager.getInstance(MainActivity.this).getAuthToken());
+            if (stompClient != null) stompClient.connect();
+
+            System.out.println("Start hereeeee");
+            setupBottomNavigationForRole(userRole);
         }
-
-        System.out.println("Start hereeeee");
-
-        setupBottomNavigationForRole(userRole);
     }
 
     /**
@@ -104,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_chat) {
                     showChatsListFragment();
                     return true;
+                } else if (id == R.id.nav_profile) {
+                    showProfileFragment();
                 }
 //                } else if (id == R.id.nav_search) {
 //                    showProductSearchFragment();
