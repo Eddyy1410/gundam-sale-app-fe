@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ProductDetailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductListAdapter;
@@ -107,10 +108,14 @@ public class ProductListFragment extends Fragment {
                 {}
         );
 
+        // Chat click listener
+        // ReactJS có props, thì Intent có extras --> truyền dữ liệu giữa các Intent
         ivChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), ChatActivity.class));
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("CUSTOMER_ID", SessionManager.getInstance(getActivity()).getUserId());
+                startActivity(intent);
             }
         });
 

@@ -67,4 +67,11 @@ public class ApiClient {
         // Trả về instance duy nhất (3)
         return retrofit.create(ApiService.class);
     }
+
+    public static void clearApiClient() {
+        retrofit = null;
+        token = null;
+        Log.i("ApiClient", "Retrofit instance cleared after logout.");
+        // SessionManager.getInstance().clearAuthToken();
+    }
 }

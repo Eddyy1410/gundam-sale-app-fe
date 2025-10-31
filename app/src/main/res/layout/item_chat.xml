@@ -14,8 +14,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/customerAvatarIv"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_centerVertical="true"
             android:background="@color/colorGray01"
             android:src="@drawable/ic_person_white"
@@ -38,13 +38,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/customerAvatarIv"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.121" />
 
         <TextView
             android:id="@+id/lastMessageTv"
             style="@style/TextAppearance.Material3.BodyMedium"
-            android:layout_width="276dp"
-            android:layout_height="29dp"
+            android:layout_width="281dp"
+            android:layout_height="23dp"
             android:paddingStart="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,10 +61,10 @@
             android:layout_height="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toEndOf="@+id/lastMessageTv"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.805"
+            app:layout_constraintVertical_bias="0.742"
             tools:text="hh:mm" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -134,6 +134,7 @@ public class ProfileFragment extends Fragment {
                         if (response.isSuccessful()) {
                             // Trường hợp THÀNH CÔNG (HTTP 200)
                             Toast.makeText(getActivity(), "Đang đăng xuất", Toast.LENGTH_SHORT).show();
+                            ApiClient.clearApiClient();
                             SessionManager.getInstance(getActivity()).clearSession();
                             startActivity(new Intent(getActivity(), MainActivity.class));
                         } else {

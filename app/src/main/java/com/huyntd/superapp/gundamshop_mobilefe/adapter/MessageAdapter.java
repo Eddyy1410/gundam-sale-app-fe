@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 
 import java.util.List;
@@ -26,8 +27,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     final int currentUserId;
     List<MessageResponse> messageList;
 
-    public MessageAdapter(int currentUserId, List<MessageResponse> messageList) {
-        this.currentUserId = currentUserId;
+    public MessageAdapter(SessionManager sessionManager, List<MessageResponse> messageList) {
+        this.currentUserId = Integer.parseInt(sessionManager.getUserId());
         this.messageList = messageList; // Dữ liệu khởi tạo
     }
 

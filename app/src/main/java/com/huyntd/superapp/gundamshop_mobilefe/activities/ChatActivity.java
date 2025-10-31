@@ -1,7 +1,10 @@
 package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -31,20 +34,34 @@ public class ChatActivity extends AppCompatActivity {
     private MessageViewModel chatViewModel;
     private ApiService apiService = ApiClient.getApiService();
 
+    // Khai báo hằng số để đồng bộ key (Extra)
+    public static final String EXTRA_CUSTOMER_ID = "CUSTOMER_ID";
+    public static final String EXTRA_CUSTOMER_NAME = "CUSTOMER_NAME";
+    private String customerId;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            Log.i(TAG, "customerId: "+EXTRA_CUSTOMER_ID);
+            customerId = intent.getStringExtra(EXTRA_CUSTOMER_ID);
+            if (SessionManager.getInstance(this).getRole().equals("STAFF"))
+                binding.toolbarTitleTv.setText(intent.getStringExtra(EXTRA_CUSTOMER_NAME));
+        }
+
         // 1. Thiết lập Adapter
         RecyclerView recyclerView = binding.chatRV;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        messageAdapter = new MessageAdapter(Integer.parseInt(SessionManager.getInstance(this).getUserId()), new ArrayList<>());
+        messageAdapter = new MessageAdapter(SessionManager.getInstance(this), new ArrayList<>());
         recyclerView.setAdapter(messageAdapter);
 
         // 2. Quan sát LiveData
-        MessageRepository repository = new MessageRepository(apiService, SessionManager.getInstance(this));
+        MessageRepository repository = new MessageRepository(apiService, customerId);
         MessageViewModelFactory factory = new MessageViewModelFactory(repository);
         chatViewModel = new ViewModelProvider(this, factory).get(MessageViewModel.class);
 
