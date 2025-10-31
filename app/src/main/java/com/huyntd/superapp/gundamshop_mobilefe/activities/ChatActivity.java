@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -22,16 +21,19 @@ import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityChatBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.repository.MessageRepository;
-import com.huyntd.superapp.gundamshop_mobilefe.utils.ChatStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.MessageViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.factory.MessageViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import ua.naiksoftware.stomp.dto.StompMessage;
+
 public class ChatActivity extends AppCompatActivity {
     private ActivityChatBinding binding;
-    private ChatStompClient stompClient;
     private String TAG = "CHAT_TAG";
     private MessageAdapter messageAdapter;
     private MessageViewModel chatViewModel;
@@ -42,6 +44,8 @@ public class ChatActivity extends AppCompatActivity {
     public static final String EXTRA_CUSTOMER_NAME = "CUSTOMER_NAME";
     private String customerId;
 
+    private AppStompClient stompClient = AppStompClient.getInstance(SessionManager.getInstance(this).getAuthToken());
+    private Disposable chatTopicDisp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +91,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        stompClient = new ChatStompClient(SessionManager.getInstance(ChatActivity.this).getAuthToken());
-
         binding.toolbarBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,10 +102,26 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // 1. KẾT NỐI: Mở kết nối khi Activity hiển thị
-        // Đây là thời điểm thích hợp nhất để mở kết nối real-time
-        if (stompClient != null) {
-            stompClient.connect();
+
+        if (stompClient.isConnected()) {
+            chatTopicDisp = stompClient.subscribeDynamicTopic(
+                    getIntent().getStringExtra(EXTRA_CUSTOMER_ID),
+                    //Chỗ này xử lý nhận message
+                    new Consumer<StompMessage>() {
+                        @Override
+                        public void accept(StompMessage stompMessage) throws Exception {
+                            // XỬ LÝ TIN NHẮN REAL-TIME Ở ĐÂY
+                            // 1. Chuyển đổi stompMessage.getPayload() thành MessageResponse
+                            // 2. Cập nhật LiveData/Adapter (LƯU Ý: Phải chạy trên UI Thread)
+                            runOnUiThread(() -> {
+                                // Ví dụ: messageAdapter.addMessage(newMessage);
+                                // Cập nhật LiveData: chatViewModel.addMessage(newMessage);
+                            });
+                        }
+                    }
+            );
+        } else {
+            Log.e(TAG, "onResume: StompClient is not connected!");
         }
     }
 
@@ -111,20 +129,10 @@ public class ChatActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        // 2. NGẮT KẾT NỐI: Đóng kết nối khi Activity bị tạm dừng (người dùng thoát màn hình)
-        // Việc ngắt kết nối trong onPause() là cực kỳ quan trọng để tiết kiệm pin và dữ liệu
-        if (stompClient != null) {
-            stompClient.disconnect();
+        // 1. HỦY SUBSCRIPTION ĐỘNG
+        if (chatTopicDisp != null && !chatTopicDisp.isDisposed()) {
+            chatTopicDisp.dispose(); // Gửi Frame UNSUBSCRIBE
         }
     }
-
-    // (Tùy chọn) Vẫn giữ onDestroy() để dọn dẹp nếu có tài nguyên khác
-    /*
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Không cần disconnect() ở đây nếu đã làm trong onPause()
-    }
-    */
 
 }

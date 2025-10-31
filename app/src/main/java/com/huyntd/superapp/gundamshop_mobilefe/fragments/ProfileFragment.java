@@ -33,13 +33,17 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.UserViewModel;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProfileFragment extends Fragment {
 
     TextView tvOrdersCount, tvName, tvPhone, tvPointsCount;
@@ -135,6 +139,7 @@ public class ProfileFragment extends Fragment {
                             // Trường hợp THÀNH CÔNG (HTTP 200)
                             Toast.makeText(getActivity(), "Đang đăng xuất", Toast.LENGTH_SHORT).show();
                             ApiClient.clearApiClient();
+                            AppStompClient.clearInstance();
                             SessionManager.getInstance(getActivity()).clearSession();
                             startActivity(new Intent(getActivity(), MainActivity.class));
                         } else {

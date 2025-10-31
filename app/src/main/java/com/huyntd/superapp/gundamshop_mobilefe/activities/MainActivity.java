@@ -26,11 +26,13 @@ import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.DashboardFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.QuickOrderFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 
 public class MainActivity extends AppCompatActivity {
     //View binding
     private ActivityMainBinding binding;
     private SessionManager sessionManager;
+    private AppStompClient stompClient;
 
     private String userRole;
 
@@ -63,11 +65,12 @@ public class MainActivity extends AppCompatActivity {
             // Mà ApiClient chỉ được gán token thông qua login --> bị lỗi 1 số api cần bearer token
             ApiClient.setToken(SessionManager.getInstance(MainActivity.this).getAuthToken());
             userRole = sessionManager.getRole();
+            stompClient = AppStompClient.getInstance(SessionManager.getInstance(MainActivity.this).getAuthToken());
+            if (stompClient != null) stompClient.connect();
+
+            System.out.println("Start hereeeee");
+            setupBottomNavigationForRole(userRole);
         }
-
-        System.out.println("Start hereeeee");
-
-        setupBottomNavigationForRole(userRole);
     }
 
     /**

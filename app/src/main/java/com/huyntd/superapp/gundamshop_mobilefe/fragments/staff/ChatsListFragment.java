@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,9 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ConversationAdapter;
@@ -23,7 +20,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.FragmentChatsListBinding;
 import com.huyntd.superapp.gundamshop_mobilefe.repository.ConversationRepository;
-import com.huyntd.superapp.gundamshop_mobilefe.utils.ChatStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ConversationViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.factory.ConversationViewModelFactory;
 
@@ -35,7 +32,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChatsListFragment extends Fragment {
     FragmentChatsListBinding binding;
-    ChatStompClient stompClient;
+    AppStompClient stompClient;
     final String TAG = "CHATS_LIST_FRAGMENT_TAG";
     ApiService apiService = ApiClient.getApiService();
     ConversationAdapter conversationAdapter;
