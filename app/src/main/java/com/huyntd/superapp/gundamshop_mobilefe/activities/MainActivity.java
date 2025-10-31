@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(0, bars.top, 0, 0);
             return insets;
         });
+
         sessionManager = SessionManager.getInstance(MainActivity.this);
         if (!sessionManager.isLoggedIn()) {
             startLoginOptionsActivity();
@@ -103,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_chat) {
                     showChatsListFragment();
                     return true;
+                } else if (id == R.id.nav_profile) {
+                    showProfileFragment();
                 }
 //                } else if (id == R.id.nav_search) {
 //                    showProductSearchFragment();
