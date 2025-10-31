@@ -369,6 +369,8 @@
 
                     <!-- Row 1: Thông tin cá nhân -->
                     <LinearLayout
+                        android:id="@+id/personalInfoLL"
+                        android:onClick="openPersonalInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -480,6 +482,7 @@
 
                     <!-- Row 4: Đổi mật khẩu -->
                     <LinearLayout
+                        android:id="@+id/ll_change_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -530,6 +533,7 @@
 
                     <!-- Row 1: Sản phẩm yêu thích -->
                     <LinearLayout
+                        android:id="@+id/ll_favorites"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"

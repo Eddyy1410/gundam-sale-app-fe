@@ -1,8 +1,12 @@
 package com.huyntd.superapp.gundamshop_mobilefe.api;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.ChangePasswordRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.DeleteAccountRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.ResetPasswordRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserProfileUpdateRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
@@ -20,6 +24,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -53,6 +58,26 @@ public interface ApiService {
 
     @POST("/auth/logout")
     Call<ApiResponse<Void>> logout(@Body LogoutRequest request);
+
+    @POST("/auth/change-password")
+    Call<ApiResponse<Void>> changePassword(@Body ChangePasswordRequest request);
+
+    // Forgot / Reset password
+    @POST("auth/forgot-password")
+    Call<ApiResponse<Void>> forgotPassword(@Query("email") String email);
+
+    @POST("auth/reset-password")
+    Call<ApiResponse<String>> resetPassword(@Body ResetPasswordRequest request);
+
+    // Verify reset code (accepts email+code). Uses a Map payload in callers, so expose a Map<String,String> body here.
+    @POST("auth/verify-reset-code")
+    Call<ApiResponse<Void>> verifyResetCode(@Body java.util.Map<String, String> payload);
+
+    @PUT("user/me")
+    Call<ApiResponse<UserResponse>> updateMyProfile(@Body UserProfileUpdateRequest request);
+
+    @retrofit2.http.HTTP(method = "DELETE", path = "user/me", hasBody = true)
+    Call<ApiResponse<Void>> deleteMyAccount(@Body DeleteAccountRequest request);
 
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")

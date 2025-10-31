@@ -43,6 +43,15 @@
             android:name=".activities.LoginOptionsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ForgotPasswordEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgotPasswordOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgotPasswordResetActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>

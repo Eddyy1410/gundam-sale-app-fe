@@ -24,6 +24,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.ChatsListFragment
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.PersonalInfoFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.DashboardFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.QuickOrderFragment;
 
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        binding.toolbarTitleTv.setText("Profile");
 
+        // Navigate to the original ProfileFragment
         ProfileFragment profileFragment = new ProfileFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(binding.fragmentsFL.getId(), profileFragment, "ProfileFragment");
@@ -190,6 +192,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
+    }
+
+    // Called from fragment_profile.xml via android:onClick
+    public void openPersonalInfo(android.view.View view) {
+        android.util.Log.d("MainActivity", "openPersonalInfo clicked");
+        android.widget.Toast.makeText(this, "Opening Thông tin cá nhân", android.widget.Toast.LENGTH_SHORT).show();
+        PersonalInfoFragment personalInfoFragment = new PersonalInfoFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(binding.fragmentsFL.getId(), personalInfoFragment, "PersonalInfoFragment")
+                .addToBackStack(null)
+                .commit();
     }
 
     // ----------------- COMMON UTILS -----------------

@@ -116,6 +116,39 @@ public class ProfileFragment extends Fragment {
 
         LinearLayout orderHistoryLL = view.findViewById(R.id.orderHistoryLL);
 
+        // Replace click handler for "Đổi mật khẩu" to open ChangePasswordFragment instead of PersonalInfoFragment
+        LinearLayout llChangePassword = view.findViewById(R.id.ll_change_password);
+        llChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null) {
+                    // Replace the main activity's fragment container with ChangePasswordFragment
+                    ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragmentsFL, changePasswordFragment, "ChangePasswordFragment")
+                            .addToBackStack("ChangePassword")
+                            .commit();
+                }
+            }
+        });
+
+        // Open Favorites when user clicks "Sản phẩm yêu thích"
+        LinearLayout llFavorites = view.findViewById(R.id.ll_favorites);
+        llFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null) {
+                    FavoritesFragment favoritesFragment = new FavoritesFragment();
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragmentsFL, favoritesFragment, "FavoritesFragment")
+                            .addToBackStack("Favorites")
+                            .commit();
+                }
+            }
+        });
+
         orderHistoryLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
