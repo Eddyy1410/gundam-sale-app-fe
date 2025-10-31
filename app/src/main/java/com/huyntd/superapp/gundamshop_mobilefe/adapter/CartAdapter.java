@@ -1,6 +1,7 @@
 package com.huyntd.superapp.gundamshop_mobilefe.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
         CartItemResponse item = cartItems.get(position);
         holder.bind(item);
+
     }
 
     @Override

@@ -42,6 +42,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ImageView ivBack, ivCart;
     private TextView tvProductName, tvProductPrice, tvProductQuantity, tvProductDescription;
     private Button btnBuy;
+    private Button btnAddToCart;
     private View navbar;
     private ScrollView scrollView;
 
@@ -82,6 +83,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvProductQuantity = findViewById(R.id.tvProductQuantity);
         tvProductDescription = findViewById(R.id.tvProductDescription);
         btnBuy = findViewById(R.id.btnBuy);
+        btnAddToCart = findViewById(R.id.btnAddToCart);
         navbar = findViewById(R.id.navbar);
         scrollView = findViewById(R.id.scrollView);
         rvRelated = findViewById(R.id.rvRelatedProducts);
@@ -141,6 +143,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
         btnBuy.setOnClickListener(v -> addToCart());
+        btnAddToCart.setOnClickListener(v -> addToCart());
     }
 
     private void addToCart() {
