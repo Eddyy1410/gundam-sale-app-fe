@@ -15,6 +15,32 @@
         android:theme="@style/Theme.GundamShopMobileFE"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.PaymentWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PaymentSuccessActivty"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PaymentFailedActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-failed"
+                    android:scheme="myapp" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CheckoutActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.OrderDetailActivity"
             android:exported="false" />
         <activity
@@ -49,6 +75,20 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.PaymentSuccessActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-success"
+                    android:scheme="myapp" />
             </intent-filter>
         </activity>
     </application>
