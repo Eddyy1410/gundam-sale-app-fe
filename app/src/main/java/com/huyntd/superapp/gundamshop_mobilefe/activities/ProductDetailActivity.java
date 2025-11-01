@@ -52,6 +52,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private List<String> imageUrls;
     private ProductResponse currentProduct;
 
+    private int productId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +127,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvProductPrice.setText(String.format("%,.0f₫", product.getPrice().doubleValue()));
         tvProductQuantity.setText("Số lượng: " + product.getQuantity());
         tvProductDescription.setText(product.getFullDescription() != null ? product.getFullDescription() : "Không có mô tả");
-
         btnBuy.setText(String.format("Mua với giá %,.0f₫", product.getPrice().doubleValue()));
 
         imageUrls = product.getImageUrls();
@@ -134,6 +135,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             vpProductImages.setAdapter(adapter);
             setupAutoScroll();
         }
+        //Lấy ra id để mua hàng
+        productId = product.getId();
     }
 
     private void setupButtons() {
@@ -142,7 +145,15 @@ public class ProductDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
             startActivity(intent);
         });
-        btnBuy.setOnClickListener(v -> addToCart());
+        btnBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductDetailActivity.this, CheckoutActivity.class);
+                intent.putExtra("status", true);
+                intent.putExtra("productId", productId);
+                startActivity(intent);
+            }
+        });
         btnAddToCart.setOnClickListener(v -> addToCart());
     }
 

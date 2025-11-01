@@ -82,7 +82,7 @@ public interface ApiService {
     Call<ApiResponse<OrderResponse>> getOrderDetail(@Path("id") int id);
 
     @POST("order")
-    Call<ApiResponse<OrderResponse>> createOrder(@Body CreateOrderRequest request);
+    Call<ApiResponse<OrderResponse>> createOrder(@Body CreateOrderRequest request, @Query("status") boolean status);
 
     //---------------------------------PAYMENT------------------------------------------
     @POST("payment/vnpay-create-payment")

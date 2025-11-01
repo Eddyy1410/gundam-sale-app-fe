@@ -24,8 +24,8 @@ public class OrderViewModel extends ViewModel {
         return orderRepository.getOrdersByStatus(userId, status);
     }
 
-    public LiveData<OrderResponse> createNewOrder(CreateOrderRequest request) {
-        return orderRepository.createOrder(request);
+    public LiveData<OrderResponse> createNewOrder(CreateOrderRequest request, boolean status) {
+        return orderRepository.createOrder(request, status);
     }
 
 }
