@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.CartActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ProductDetailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductListAdapter;
@@ -103,9 +104,10 @@ public class ProductListFragment extends Fragment {
         // Cart click listener
         ivCart.setOnClickListener(v ->
                         // TODO: mở màn hình giỏ hàng (ví dụ CartActivity)
-                        // startActivity(new Intent(requireContext(), CartActivity.class));
-                {}
+                         startActivity(new Intent(requireContext(), CartActivity.class))
         );
+
+
 
         ivChat.setOnClickListener(new View.OnClickListener() {
             @Override

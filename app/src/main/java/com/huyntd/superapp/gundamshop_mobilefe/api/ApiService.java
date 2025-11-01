@@ -4,6 +4,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequ
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.CreateOrderRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.PaymentRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateCartRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
@@ -20,8 +21,10 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -91,6 +94,15 @@ public interface ApiService {
     //-----------------------------------CART-------------------------------------------
     @GET("cart/user/{id}")
     Call<ApiResponse<CartResponse>> getCartByUserId(@Path("id") int id);
+
+    @POST("cart")
+    Call<ApiResponse<Boolean>> addToCart(@Query("productId") int productId, @Query("userId") int userId);
+
+    @PUT("cart/user/{id}")
+    Call<ApiResponse<CartResponse>> updateCart(@Path("id") int userId, @Body UpdateCartRequest request);
+
+    @DELETE("cart")
+    Call<ApiResponse<Boolean>> removeFromCart(@Query("productId") int productId, @Query("userId") int userId);
 
 
 

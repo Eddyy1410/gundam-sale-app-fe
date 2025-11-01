@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductImageAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.RelatedProductAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.ui.theme.GridSpacingItemDecoration;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.CartViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ProductDetailViewModel;
 
 import java.util.List;
@@ -31,6 +33,8 @@ import java.util.List;
 public class ProductDetailActivity extends AppCompatActivity {
 
     private ProductDetailViewModel viewModel;
+    private CartViewModel cartViewModel;
+    private SessionManager sessionManager;
     private Handler autoScrollHandler = new Handler();
     private Runnable autoScrollRunnable;
 
@@ -38,6 +42,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ImageView ivBack, ivCart;
     private TextView tvProductName, tvProductPrice, tvProductQuantity, tvProductDescription;
     private Button btnBuy;
+    private Button btnAddToCart;
     private View navbar;
     private ScrollView scrollView;
 
@@ -45,6 +50,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private RelatedProductAdapter relatedProductAdapter;
 
     private List<String> imageUrls;
+    private ProductResponse currentProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         setupButtons();
 
         viewModel = new ViewModelProvider(this).get(ProductDetailViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+        sessionManager = SessionManager.getInstance(this);
 
         int productId = getIntent().getIntExtra("product_id", -1);
         if (productId != -1) {
@@ -75,6 +83,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvProductQuantity = findViewById(R.id.tvProductQuantity);
         tvProductDescription = findViewById(R.id.tvProductDescription);
         btnBuy = findViewById(R.id.btnBuy);
+        btnAddToCart = findViewById(R.id.btnAddToCart);
         navbar = findViewById(R.id.navbar);
         scrollView = findViewById(R.id.scrollView);
         rvRelated = findViewById(R.id.rvRelatedProducts);
@@ -101,6 +110,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void observeData() {
         viewModel.getProductLiveData().observe(this, product -> {
             if (product != null){
+                currentProduct = product;
                 bindData(product);
                 loadRelatedProducts(product.getCategoryId());
             }
@@ -128,8 +138,45 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void setupButtons() {
         ivBack.setOnClickListener(v -> finish());
-        ivCart.setOnClickListener(v -> Toast.makeText(this, "Đi tới giỏ hàng", Toast.LENGTH_SHORT).show());
-        btnBuy.setOnClickListener(v -> Toast.makeText(this, "Đã thêm vào giỏ", Toast.LENGTH_SHORT).show());
+        ivCart.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
+        btnBuy.setOnClickListener(v -> addToCart());
+        btnAddToCart.setOnClickListener(v -> addToCart());
+    }
+
+    private void addToCart() {
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (currentProduct == null) {
+            Toast.makeText(this, "Không thể thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userIdStr = sessionManager.getUserId();
+        if (userIdStr == null) {
+            Toast.makeText(this, "Lỗi lấy thông tin user", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            int userId = Integer.parseInt(userIdStr);
+            int productId = currentProduct.getId();
+
+            cartViewModel.addToCart(userId, productId).observe(this, success -> {
+                if (success != null && success) {
+                    Toast.makeText(this, "Đã thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Không thể thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Lỗi định dạng user ID", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupScrollEffect() {
