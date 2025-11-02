@@ -1,5 +1,7 @@
 package com.huyntd.superapp.gundamshop_mobilefe.viewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -15,15 +17,18 @@ import lombok.experimental.FieldDefaults;
 public class ConversationViewModel extends ViewModel {
 
     final ConversationRepository repository;
-    final LiveData<List<ConversationResponse>> conversationList;
+    String TAG = "CONVERSATION_VM_TAG";
 
     public ConversationViewModel(ConversationRepository repository) {
         this.repository = repository;
-        this.conversationList = repository.getConversations();
     }
 
     public LiveData<List<ConversationResponse>> getConversationList() {
-        return conversationList;
+        return repository.getConversations();
+    }
+
+    public LiveData<ConversationResponse> getConversationByCustomerId(String customerId) {
+        return repository.getConversationByCustomerId(customerId);
     }
 
 }

@@ -76,12 +76,13 @@ public class ChatsListFragment extends Fragment {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
             intent.putExtra("CUSTOMER_ID", String.valueOf(conversation.getCustomerId()));
             intent.putExtra("CUSTOMER_NAME", conversation.getCustomerName());
+            intent.putExtra("CONVERSATION_ID", String.valueOf(conversation.getConversationId()));
             startActivity(intent);
         });
     }
 
     private void setupViewModel() {
-        ConversationRepository repository = new ConversationRepository(apiService, SessionManager.getInstance(getActivity()));
+        ConversationRepository repository = new ConversationRepository(ApiClient.getApiService(), SessionManager.getInstance(getActivity()));
         ConversationViewModelFactory factory = new ConversationViewModelFactory(repository);
 
         // ViewModelProvider(this, ...) sử dụng Fragment làm LifecycleOwner

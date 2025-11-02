@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.MessageAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
@@ -37,15 +39,14 @@ public class ChatActivity extends AppCompatActivity {
     private String TAG = "CHAT_TAG";
     private MessageAdapter messageAdapter;
     private MessageViewModel chatViewModel;
-    private ApiService apiService = ApiClient.getApiService();
 
     // Khai báo hằng số để đồng bộ key (Extra)
     public static final String EXTRA_CUSTOMER_ID = "CUSTOMER_ID";
     public static final String EXTRA_CUSTOMER_NAME = "CUSTOMER_NAME";
+    public static final String EXTRA_CONVERSATION_ID ="CONVERSATION_ID";
     private String customerId;
 
     private AppStompClient stompClient = AppStompClient.getInstance(SessionManager.getInstance(this).getAuthToken());
-    private Disposable chatTopicDisp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +63,16 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            Log.i(TAG, "customerId: "+EXTRA_CUSTOMER_ID);
+            Log.i(TAG, "customerId: "+intent.getStringExtra(EXTRA_CUSTOMER_ID));
+            Log.i(TAG, "conversationId: "+intent.getStringExtra(EXTRA_CONVERSATION_ID));
             customerId = intent.getStringExtra(EXTRA_CUSTOMER_ID);
             if (SessionManager.getInstance(this).getRole().equals("STAFF"))
                 binding.toolbarTitleTv.setText(intent.getStringExtra(EXTRA_CUSTOMER_NAME));
+                Glide.with(this)
+                        .load("https://i.pinimg.com/736x/30/a8/49/30a8490ff409df33d1e23702cf2c4aa8.jpg")
+                        .override(300, 300) // fix size 200x200 pixel
+                        .centerCrop()       // cắt giữa hình để không méo
+                        .into(binding.toolbarProfileIv);
         }
 
         // 1. Thiết lập Adapter
@@ -75,7 +82,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(messageAdapter);
 
         // 2. Quan sát LiveData
-        MessageRepository repository = new MessageRepository(apiService, customerId);
+        MessageRepository repository = new MessageRepository(stompClient, customerId);
         MessageViewModelFactory factory = new MessageViewModelFactory(repository);
         chatViewModel = new ViewModelProvider(this, factory).get(MessageViewModel.class);
 
@@ -83,11 +90,19 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<MessageResponse> messageList) {
                 if (messageList != null) {
-                    // Cập nhật adapter khi dữ liệu thay đổi
                     messageAdapter.setMessages(messageList);
                     // Tự động cuộn xuống tin nhắn mới nhất
                     recyclerView.scrollToPosition(messageList.size() - 1);
                 }
+            }
+        });
+
+        // --- OBSERVE TIN NHẮN MỚI ĐẾN (REAL-TIME) ---
+        chatViewModel.getNewIncomingMessage().observe(this, newMessage -> {
+            if (newMessage != null) {
+                // Cập nhật adapter bằng tin nhắn mới
+                messageAdapter.addMessage(newMessage); // Yêu cầu MessageAdapter có addMessage
+                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
         });
 
@@ -97,42 +112,51 @@ public class ChatActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        EditText content = binding.messageEt;
+        binding.sendFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chatViewModel.sendMessage(Integer.parseInt(intent.getStringExtra(EXTRA_CONVERSATION_ID)), content.getText().toString());
+                binding.messageEt.setText("");
+            }
+        });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (stompClient.isConnected()) {
-            chatTopicDisp = stompClient.subscribeDynamicTopic(
-                    getIntent().getStringExtra(EXTRA_CUSTOMER_ID),
-                    //Chỗ này xử lý nhận message
-                    new Consumer<StompMessage>() {
-                        @Override
-                        public void accept(StompMessage stompMessage) throws Exception {
-                            // XỬ LÝ TIN NHẮN REAL-TIME Ở ĐÂY
-                            // 1. Chuyển đổi stompMessage.getPayload() thành MessageResponse
-                            // 2. Cập nhật LiveData/Adapter (LƯU Ý: Phải chạy trên UI Thread)
-                            runOnUiThread(() -> {
-                                // Ví dụ: messageAdapter.addMessage(newMessage);
-                                // Cập nhật LiveData: chatViewModel.addMessage(newMessage);
-                            });
-                        }
-                    }
-            );
-        } else {
-            Log.e(TAG, "onResume: StompClient is not connected!");
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // 1. HỦY SUBSCRIPTION ĐỘNG
-        if (chatTopicDisp != null && !chatTopicDisp.isDisposed()) {
-            chatTopicDisp.dispose(); // Gửi Frame UNSUBSCRIBE
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        if (stompClient.isConnected()) {
+//            chatTopicDisp = stompClient.subscribeDynamicTopic(
+//                    getIntent().getStringExtra(EXTRA_CUSTOMER_ID),
+//                    //Chỗ này xử lý nhận message
+//                    new Consumer<StompMessage>() {
+//                        @Override
+//                        public void accept(StompMessage stompMessage) throws Exception {
+//                            // XỬ LÝ TIN NHẮN REAL-TIME Ở ĐÂY
+//                            // 1. Chuyển đổi stompMessage.getPayload() thành MessageResponse
+//                            // 2. Cập nhật LiveData/Adapter (LƯU Ý: Phải chạy trên UI Thread)
+//                            runOnUiThread(() -> {
+//                                // Ví dụ: messageAdapter.addMessage(newMessage);
+//                                // Cập nhật LiveData: chatViewModel.addMessage(newMessage);
+//                            });
+//                        }
+//                    }
+//            );
+//        } else {
+//            Log.e(TAG, "onResume: StompClient is not connected!");
+//        }
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        // 1. HỦY SUBSCRIPTION ĐỘNG
+//        if (chatTopicDisp != null && !chatTopicDisp.isDisposed()) {
+//            chatTopicDisp.dispose(); // Gửi Frame UNSUBSCRIBE
+//        }
+//    }
 
 }

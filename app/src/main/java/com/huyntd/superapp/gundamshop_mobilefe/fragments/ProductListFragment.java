@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,9 +27,14 @@ import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ProductDetailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductListAdapter;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.repository.ConversationRepository;
 import com.huyntd.superapp.gundamshop_mobilefe.ui.theme.GridSpacingItemDecoration;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ConversationViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ProductListViewModel;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.factory.ConversationViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +46,11 @@ import java.util.List;
 public class ProductListFragment extends Fragment {
 
     private ProductListViewModel viewModel;
+    private ConversationViewModel conversationViewModel;
     private ProductListAdapter adapter;
     private List<ProductResponse> allProducts = new ArrayList<>();
+
+    final String TAG = "PRODUCT_LIST_FRAGMENT";
 
 
     @Nullable
@@ -113,9 +122,24 @@ public class ProductListFragment extends Fragment {
         ivChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChatActivity.class);
-                intent.putExtra("CUSTOMER_ID", SessionManager.getInstance(getActivity()).getUserId());
-                startActivity(intent);
+                ConversationRepository repository = new ConversationRepository(ApiClient.getApiService(), SessionManager.getInstance(getActivity()));
+                ConversationViewModelFactory factory = new ConversationViewModelFactory(repository);
+                conversationViewModel = new ViewModelProvider(getActivity(), factory).get(ConversationViewModel.class);
+
+                conversationViewModel.getConversationByCustomerId(SessionManager.getInstance(getActivity()).getUserId())
+                        .observe(getActivity(), new Observer<ConversationResponse>() {
+                            @Override
+                            public void onChanged(ConversationResponse conversation) {
+                                if (conversation != null) {
+                                    Intent intent = new Intent(getActivity(), ChatActivity.class);
+                                    intent.putExtra("CUSTOMER_ID", SessionManager.getInstance(getActivity()).getUserId());
+                                    intent.putExtra("CONVERSATION_ID", String.valueOf(conversation.getConversationId()));
+                                    //Log.i(TAG, "conversation ID type: "+((Object)conversation.getConversationId()).getClass().getName());
+                                    startActivity(intent);
+                                    Log.i(TAG, "conversationVM response: "+conversation);
+                                }
+                            }
+                        });
             }
         });
 

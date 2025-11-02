@@ -6,6 +6,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 import io.reactivex.Notification;
@@ -26,7 +27,7 @@ public class AppStompClient {
     private static AppStompClient instance;
     static final String TAG = "CHAT_STOMP_CLIENT";
     final String jwtToken;
-    final String serverUrl = "ws://10.0.2.2:8080/ws-native";
+    final String serverUrl = "ws://172.20.10.8:8080/ws-native";
 
     // Phải thêm maven { url = uri("https://jitpack.io") } trong settings.gradle.kts (Project Settings)
     // dependencyResolutionManagement {
@@ -116,13 +117,13 @@ public class AppStompClient {
     private void subscribePersistentTopics() {
         Disposable notificationDisp = stompClient.topic("/user/queue/notifications")
                 .subscribe(stompMessage -> {
-                    System.out.println("Notification received: "+stompMessage.getPayload());
+                    Log.i(TAG, "Notification received: "+stompMessage.getPayload());
                 });
         persistentDisposable.add(notificationDisp);
 
         Disposable errorDisp = stompClient.topic("/user/queue/errors")
                 .subscribe(stompMessage -> {
-                    System.out.println("Error frame received: "+stompMessage.getPayload());
+                    Log.e(TAG, "Error frame received: "+stompMessage.getPayload());
                 });
         persistentDisposable.add(errorDisp);
     }
@@ -134,7 +135,7 @@ public class AppStompClient {
         }
 
         // StompClient của NaikSoftware tự động thêm các header cần thiết (content-length, etc.)
-        stompClient.send("/app/chat/" + customerId, jsonPayload)
+        stompClient.send("/app/chat/"+customerId, jsonPayload)
                 .subscribe(() -> {
                     // Hoàn thành gửi (Tùy chọn: Xử lý local message update)
                 }, throwable -> {

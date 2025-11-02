@@ -134,6 +134,9 @@ public interface ApiService {
      @GET("api/conversations/list/{staffId}")
      Call<ApiResponse<List<ConversationResponse>>> getConversations(@Path("staffId") int id);
 
+     @GET("api/conversations/{customerId}")
+     Call<ApiResponse<ConversationResponse>> getConversationByCustomerId(@Path("customerId") int id);
+
     // ----------------------------------MESSAGE----------------------------------------
     @GET("api/messages/{customerId}")
     Call<ApiResponse<List<MessageResponse>>> getMessages(@Path("customerId") int id);
