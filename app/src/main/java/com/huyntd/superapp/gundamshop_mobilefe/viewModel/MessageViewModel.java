@@ -3,17 +3,12 @@ package com.huyntd.superapp.gundamshop_mobilefe.viewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.Gson;
-import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
-import com.huyntd.superapp.gundamshop_mobilefe.models.request.SendMessageRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.repository.MessageRepository;
-import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 
 import java.util.List;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -29,6 +24,7 @@ public class MessageViewModel extends ViewModel {
 
         // startListeningForChat phía repo dùng để subscribe destination topic/conversation/id (Quản lý vòng đời)
         repository.startListeningForChat();
+        repository.updateReadMessages();
 
         // Lấy LiveData tin nhắn mới (cho Activity quan sát)
         this.newMessageResponse = repository.getNewIncomingMessage();
@@ -45,7 +41,7 @@ public class MessageViewModel extends ViewModel {
         }
     }
 
-     public LiveData<List<MessageResponse>> getMessageList() {
+    public LiveData<List<MessageResponse>> getMessageList() {
          return messageList;
      }
 

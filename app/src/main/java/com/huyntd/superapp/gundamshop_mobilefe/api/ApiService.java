@@ -8,11 +8,13 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.PaymentRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.ResetPasswordRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateReadMessageRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserProfileUpdateRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.CountResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
@@ -140,4 +142,10 @@ public interface ApiService {
     // ----------------------------------MESSAGE----------------------------------------
     @GET("api/messages/{customerId}")
     Call<ApiResponse<List<MessageResponse>>> getMessages(@Path("customerId") int id);
+
+    @GET("api/messages/unread/{receiverId}")
+    Call<ApiResponse<CountResponse>> countUnreadMessages(@Path("receiverId") int id);
+
+    @PUT("api/messages/read")
+    Call<ApiResponse<CountResponse>> updateReadMessages(@Body UpdateReadMessageRequest request);
 }

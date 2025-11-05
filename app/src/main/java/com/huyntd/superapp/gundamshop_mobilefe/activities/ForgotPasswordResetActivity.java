@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 
 public class ForgotPasswordResetActivity extends AppCompatActivity {
 
@@ -66,7 +67,7 @@ public class ForgotPasswordResetActivity extends AppCompatActivity {
                     .confirmNewPassword(conf)
                     .build();
 
-            com.huyntd.superapp.gundamshop_mobilefe.api.ApiService api = com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient.getUnauthService();
+            ApiService api = com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient.getUnauthService();
             confirmBtn.setEnabled(false);
             api.resetPassword(req).enqueue(new retrofit2.Callback<com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse<String>>() {
                 @Override

@@ -21,5 +21,6 @@ public class MessageResponse {
     int senderId;
     String senderName;
     String content;
+    String status;
     Date sentAt;
 }

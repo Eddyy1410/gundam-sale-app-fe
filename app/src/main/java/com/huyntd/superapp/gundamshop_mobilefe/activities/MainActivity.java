@@ -28,6 +28,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.fragments.PersonalInfoFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.DashboardFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.QuickOrderFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.WebSocketService;
 
 public class MainActivity extends AppCompatActivity {
     //View binding
@@ -66,8 +67,11 @@ public class MainActivity extends AppCompatActivity {
             // Mà ApiClient chỉ được gán token thông qua login --> bị lỗi 1 số api cần bearer token
             ApiClient.setToken(SessionManager.getInstance(MainActivity.this).getAuthToken());
             userRole = sessionManager.getRole();
-            stompClient = AppStompClient.getInstance(SessionManager.getInstance(MainActivity.this).getAuthToken());
-            if (stompClient != null) stompClient.connect();
+//            stompClient = AppStompClient.getInstance(SessionManager.getInstance(MainActivity.this).getAuthToken());
+//            if (stompClient != null) stompClient.connect();
+
+            // BẮT ĐẦU SERVICE để nó quản lý việc kết nối và lắng nghe
+            startWebSocketService();
 
             System.out.println("Start hereeeee");
             setupBottomNavigationForRole(userRole);
@@ -186,16 +190,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void handleShowChat() {
-//        SessionManager sessionManager = SessionManager.getInstance(this);
-//        String userRole = sessionManager.getRole();
-//        if("STAFF".equalsIgnoreCase(userRole)){
-//            showChatsListFragment();
-//        } else if ("CUSTOMER".equalsIgnoreCase(userRole)) {
-//            show
-//        }
-//    }
-
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
     }
@@ -219,8 +213,11 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    private void startChatActivity() {
-        startActivity(new Intent(this, ChatActivity.class));
+    private void startWebSocketService() {
+        Intent serviceIntent = new Intent(this, WebSocketService.class);
+        // Sử dụng startForegroundService để tuân thủ quy tắc Android O+
+        // Service sẽ ngay lập tức gọi onCreate() rồi đến onStartCommand()
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
 
 

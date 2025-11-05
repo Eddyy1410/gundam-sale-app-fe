@@ -1,17 +1,17 @@
 package com.huyntd.superapp.gundamshop_mobilefe.repository;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
-import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.SendMessageRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateReadMessageRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.CountResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 
@@ -36,6 +36,8 @@ public class MessageRepository {
 
     final AppStompClient stompClient;
     final String customerId;
+    final String userId;
+    final String conversationId;
 
     String TAG = "MESSAGE_REPO_TAG";
 
@@ -49,6 +51,7 @@ public class MessageRepository {
             public void onResponse(Call<ApiResponse<List<MessageResponse>>> call, Response<ApiResponse<List<MessageResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     data.postValue(response.body().getResult());
+                    Log.i(TAG, "onResponse: "+response);
                 } else {
                     data.postValue(null);
                     Log.e(TAG, "onResponse: "+response.body().getMessage());
@@ -63,6 +66,30 @@ public class MessageRepository {
         });
 
         return data;
+    }
+
+    public void updateReadMessages() {
+
+        apiService.updateReadMessages(
+                UpdateReadMessageRequest.builder()
+                        .receiverId(Integer.parseInt(userId))
+                        .conversationId(Integer.parseInt(conversationId))
+                        .build()
+        ).enqueue(new Callback<ApiResponse<CountResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<CountResponse>> call, Response<ApiResponse<CountResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i(TAG, "Đã update "+response.body().getResult().getCount()+" read messages");
+                } else {
+                    Log.e(TAG, "onResponse: "+response.body().getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<CountResponse>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+            }
+        });
     }
 
     public void sendMessage(int conversationId, String content) {
@@ -114,8 +141,8 @@ public class MessageRepository {
     }
 
     // Phương thức cung cấp LiveData cho tin nhắn mới
-    public LiveData<MessageResponse> getNewIncomingMessage() {
-        return newIncomingMessage;
-    }
+//    public LiveData<MessageResponse> getNewIncomingMessage() {
+//        return newIncomingMessage;
+//    }
 
 }

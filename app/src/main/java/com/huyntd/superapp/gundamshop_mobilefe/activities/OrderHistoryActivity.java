@@ -1,7 +1,5 @@
 package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,7 +24,6 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.UserViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

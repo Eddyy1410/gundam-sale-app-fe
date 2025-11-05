@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 
 public class ForgotPasswordEmailActivity extends AppCompatActivity {
 
@@ -33,7 +34,7 @@ public class ForgotPasswordEmailActivity extends AppCompatActivity {
             }
 
             // Call forgot-password API
-            com.huyntd.superapp.gundamshop_mobilefe.api.ApiService api = com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient.getUnauthService();
+            ApiService api = com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient.getUnauthService();
             btnContinue.setEnabled(false);
             api.forgotPassword(email).enqueue(new retrofit2.Callback<com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse<Void>>() {
                 @Override

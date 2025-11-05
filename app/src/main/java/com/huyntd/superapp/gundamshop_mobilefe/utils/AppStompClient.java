@@ -27,7 +27,7 @@ public class AppStompClient {
     private static AppStompClient instance;
     static final String TAG = "CHAT_STOMP_CLIENT";
     final String jwtToken;
-    final String serverUrl = "ws://172.20.10.8:8080/ws-native";
+    final String serverUrl = "ws://10.87.28.61:8080/ws-native";
 
     // Phải thêm maven { url = uri("https://jitpack.io") } trong settings.gradle.kts (Project Settings)
     // dependencyResolutionManagement {
@@ -49,15 +49,17 @@ public class AppStompClient {
     }
 
     public static AppStompClient getInstance(String jwtToken) {
-            if (instance == null) {
-                synchronized (AppStompClient.class) {
-                    // Chỉ khởi tạo lần đầu tiên
-                    if (instance == null) {
-                        instance = new AppStompClient(jwtToken);
+            synchronized (AppStompClient.class) {
+                if (instance == null || !instance.jwtToken.equals(jwtToken)) {
+                    // Nếu instance cũ tồn tại, hủy kết nối cũ trước
+                    if (instance != null) {
+                        instance.disconnect();
+                        instance = null;
                     }
+                    instance = new AppStompClient(jwtToken);
                 }
+                return instance;
             }
-            return instance;
     }
 
     public static void clearInstance() {
@@ -73,57 +75,40 @@ public class AppStompClient {
         return stompClient.lifecycle();
     }
 
+    /**
+     * Cho phép các lớp bên ngoài (như Repository) thêm Disposable vào
+     * thùng chứa bền vững, đảm bảo chúng sẽ bị hủy khi Client ngắt kết nối.
+     */
+    public void addPersistentDisposable(Disposable disposable) {
+        if (persistentDisposable != null) {
+            persistentDisposable.add(disposable);
+        }
+    }
+
     public void connect() {
         // 1. Chuẩn bị Headers cho Frame CONNECT
         List<StompHeader> handshakeHeaders = new ArrayList<>();
         handshakeHeaders.add(new StompHeader("accept-version", "1.1,1.0"));
         handshakeHeaders.add(new StompHeader("Authorization", "Bearer " + jwtToken));
 
-        // 2. Theo dõi trạng thái kết nối
-        // mỗi lần client gửi tin nhắn (sendMessage) thường không được tính là một LifecycleEvent
-        // LifecycleEvent chỉ báo hiệu những thay đổi ở cấp độ trạng thái toàn cục của kết nối (kết nối có đang hoạt động, đã mở, đã đóng, đã lỗi nghiêm trọng không).
-        Disposable lifecycleDisp = stompClient.lifecycle()
-                .subscribe(lifecycleEvent -> {
-                    switch (lifecycleEvent.getType()) {
-                        case OPENED:
-                            Log.i(TAG, "STOMP Connection Opened!");
-                            subscribePersistentTopics();
-                            break;
-                        case ERROR:
-                            Log.e(TAG, "STOMP Connection Error: " + lifecycleEvent.getException().getMessage());
-                            // Xử lý logic Reconnect ở đây
-                            // Lỗi cấp vòng đời LifecycleEvent.Type.ERROR
-                            // Mất kết nối mạng, server bị sập, server từ chối Frame CONNECT vì lỗi cú pháp hoặc lỗi xác thực nặng (ví dụ: Interceptor ném lỗi trước khi gán Principal).
-                            break;
-                        case CLOSED:
-                            Log.w(TAG, "STOMP Connection Closed.");
-                            break;
-                    }
-        });
-
-
         Log.i(TAG, "Thêm lifecycle vào compositeDisposable");
         // dùng compositeDisposable để bọc toàn bộ event gọi đến từ client thành 1 luồng
         // Khi disconnect -> thì hủy nguyên 1 luồng tránh memory leak
-        persistentDisposable.add(lifecycleDisp);
+        subscribePersistentQueues();
 
         // 3. Bắt đầu kết nối WebSocket/STOMP
         stompClient.connect(handshakeHeaders);
     }
 
     /**
-     * SUBSCRIBE các kênh BỀN VỮNG (Persistent Topics) chỉ chạy một lần sau khi connect.
+     * Topic lỗi là System-level, nên được quản lý bởi Client
      */
-    private void subscribePersistentTopics() {
-        Disposable notificationDisp = stompClient.topic("/user/queue/notifications")
-                .subscribe(stompMessage -> {
-                    Log.i(TAG, "Notification received: "+stompMessage.getPayload());
-                });
-        persistentDisposable.add(notificationDisp);
-
+    private void subscribePersistentQueues() {
         Disposable errorDisp = stompClient.topic("/user/queue/errors")
                 .subscribe(stompMessage -> {
                     Log.e(TAG, "Error frame received: "+stompMessage.getPayload());
+                }, throwable -> {
+                    Log.e(TAG, "Subscription to /user/queue/errors failed.", throwable);
                 });
         persistentDisposable.add(errorDisp);
     }
@@ -168,6 +153,19 @@ public class AppStompClient {
 
     public boolean isConnected() {
         return stompClient.isConnected();
+    }
+
+    // --- PHƯƠNG THỨC MỚI: CUNG CẤP STREAM THÔ CHO REPOSITORY ---
+    public Flowable<StompMessage> getNotificationsQueue() {
+        return stompClient.topic("/user/queue/notifications");
+    }
+
+    public Flowable<StompMessage> getUnreadMessagesQueue() {
+        return stompClient.topic("/user/queue/unread-messages");
+    }
+
+    public Flowable<StompMessage> getMessagesQueue() {
+        return stompClient.topic("/user/queue/messages");
     }
 
 }

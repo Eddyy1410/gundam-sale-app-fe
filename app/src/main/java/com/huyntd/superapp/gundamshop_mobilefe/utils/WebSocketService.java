@@ -1,0 +1,135 @@
+package com.huyntd.superapp.gundamshop_mobilefe.utils;
+
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Build;
+import android.os.IBinder;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
+import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
+import com.huyntd.superapp.gundamshop_mobilefe.repository.NotificationRepository;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
+public class WebSocketService extends Service {
+
+    private static final String TAG = "WEBSOCKET_SERVICE";
+    private static final int NOTIFICATION_ID = 101;
+    private static final String CHANNEL_ID = "WEBSOCKET_CHANNEL";
+
+    private AppStompClient stompClient;
+    private CompositeDisposable disposables = new CompositeDisposable();
+    private NotificationRepository notificationRepository;
+
+    private final ApiService apiService = ApiClient.getApiService();
+
+    // Nhớ chỉnh trong file AndroidManifest.xml
+    // <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    // <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    // <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    // <application>.....
+    //          <service android:name=".utils.WebSocketService"
+    //            android:exported="false"
+    //            android:enabled="true"
+    //            android:foregroundServiceType="dataSync"/>.....
+    // </application
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.i(TAG, "onCreate: Đã vào đây");
+
+        // Khởi tạo Client
+        String token = SessionManager.getInstance(this).getAuthToken();
+        String userId = SessionManager.getInstance(this).getUserId();
+
+        stompClient = AppStompClient.getInstance(token);
+
+        // Khởi tạo Repository
+        notificationRepository = new NotificationRepository(stompClient, userId);
+    }
+
+    @SuppressLint("ForegroundServiceType")
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "onStartCommand: Đã vào đây");
+        // MainActivity bị hủy.
+        // stompClient có thể bị rò rỉ nếu nó là Singleton (như bạn đã thiết kế) nhưng nó không có Activity nào để "làm việc" cùng.
+        // startForeground Service cái này giúp cho process của app ko bị kill bới Android
+        // nếu app process bị kill thì tất cả mọi thứ kể cả AppStompClient sẽ bị hủy
+        startForeground(NOTIFICATION_ID, createNotification());
+
+        if (!stompClient.isConnected()) {
+            Log.i(TAG, "onStartCommand: Stomp chưa connect");
+            Disposable lifecycleForegroundDisp = stompClient.getLifecycle()
+                    .subscribe(lifecycleEvent -> {
+                        switch (lifecycleEvent.getType()) {
+                            case OPENED:
+                                Log.i(TAG, "STOMP Connection Opened!");
+                                notificationRepository.startListeningForPersistenQueues();
+                                break;
+                            case ERROR:
+                                Log.e(TAG, "STOMP Connection Error: " + lifecycleEvent.getException().getMessage());
+                                break;
+                            case CLOSED:
+                                Log.w(TAG, "STOMP Connection Closed.");
+                                break;
+                        }
+                    });
+            stompClient.addPersistentDisposable(lifecycleForegroundDisp);
+
+            stompClient.connect();
+
+        } else {
+            Log.i(TAG, "onStartCommand: Stomp đã connect");
+            // Trường hợp Service được gọi lại nhưng kết nối đã mở
+            Log.i(TAG, "Client already connected. Ensuring repository subscriptions.");
+            notificationRepository.startListeningForPersistenQueues();
+        }
+
+        return START_STICKY;
+    }
+
+    private android.app.Notification createNotification() {
+        // ... (Giữ nguyên logic tạo Foreground Notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID, "Chat Background Service", NotificationManager.IMPORTANCE_LOW
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        return new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Dịch vụ chat đang chạy")
+                .setContentText("Đang chờ tin nhắn mới...")
+                .setSmallIcon(R.drawable.ic_nav_chat)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
+    }
+
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        Log.i(TAG, "Service being destroyed. Disposing subscriptions.");
+//
+//        // Tất cả disposable đã dồn về AppStompClient nên chỉ khi logout
+//        stompClient.disconnect();
+//    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+}

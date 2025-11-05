@@ -8,7 +8,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,17 +22,15 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
-import com.huyntd.superapp.gundamshop_mobilefe.activities.LoginEmailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.MainActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.OrderHistoryActivity;
-import com.huyntd.superapp.gundamshop_mobilefe.adapter.OrdersAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.WebSocketService;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.UserViewModel;
 
@@ -173,20 +170,12 @@ public class ProfileFragment extends Fragment {
                             Toast.makeText(getActivity(), "Đang đăng xuất", Toast.LENGTH_SHORT).show();
                             ApiClient.clearApiClient();
                             AppStompClient.clearInstance();
+                            getContext().stopService(new Intent(getContext(), WebSocketService.class));
                             SessionManager.getInstance(getActivity()).clearSession();
                             startActivity(new Intent(getActivity(), MainActivity.class));
                         } else {
-                            // Trường hợp THẤT BẠI HTTP (404, 500, 401, v.v.)
                             try {
-                                // 1. Lấy body lỗi dưới dạng chuỗi
                                 String errorJson = response.errorBody().string();
-
-                                // 2. Sử dụng Gson (hoặc Moshi) để chuyển chuỗi JSON lỗi thành ApiResponse
-                                // ==> Cần phải khởi tạo Gson và định nghĩa lại kiểu generic cho ApiResponse
-                                // Sử dụng Type: Type type = new TypeToken<ApiResponse<Object>>() {}.getType();
-                                // Hoặc đơn giản hơn, nếu bạn chỉ cần message:
-
-                                // SỬ DỤNG GSON ĐỂ PARSE LỖI:
                                 Gson gson = new Gson();
                                 ApiResponse<?> errorResponse = gson.fromJson(errorJson, ApiResponse.class);
 
@@ -215,5 +204,10 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void stopWebSocketService() {
+        Intent serviceIntent = new Intent(requireContext(), WebSocketService.class);
+        requireContext().stopService(serviceIntent);
     }
 }

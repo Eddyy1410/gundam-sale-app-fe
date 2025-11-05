@@ -1,12 +1,9 @@
 package com.huyntd.superapp.gundamshop_mobilefe.adapter;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,27 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.OrderDetailActivity;
-import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
-import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
-import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
-import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderItemResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
-import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
 
 import java.util.List;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import retrofit2.Call;
 
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 
 public class ForgotPasswordOtpActivity extends AppCompatActivity {
 
@@ -125,7 +126,7 @@ public class ForgotPasswordOtpActivity extends AppCompatActivity {
     // Verify OTP code with backend and navigate to reset if valid
     private void verifyCodeAndProceed(String code) {
         btnConfirm.setEnabled(false);
-        com.huyntd.superapp.gundamshop_mobilefe.api.ApiService api = com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient.getUnauthService();
+        ApiService api = com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient.getUnauthService();
         String email = getIntent().getStringExtra("forgot_email"); if (email == null) email = "";
         java.util.Map<String, String> payload = new java.util.HashMap<>();
         payload.put("email", email);
