@@ -10,6 +10,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.PaymentRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.ResetPasswordRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateReadMessageRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserProfileUpdateRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateCartRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -120,7 +122,7 @@ public interface ApiService {
     );
 
     @POST("order")
-    Call<ApiResponse<OrderResponse>> createOrder(@Body CreateOrderRequest request);
+    Call<ApiResponse<OrderResponse>> createOrder(@Body CreateOrderRequest request, @Query("status") boolean status);
 
     //---------------------------------PAYMENT------------------------------------------
     @POST("payment/vnpay-create-payment")
@@ -131,6 +133,15 @@ public interface ApiService {
     //-----------------------------------CART-------------------------------------------
     @GET("cart/user/{id}")
     Call<ApiResponse<CartResponse>> getCartByUserId(@Path("id") int id);
+
+    @POST("cart")
+    Call<ApiResponse<Boolean>> addToCart(@Query("productId") int productId, @Query("userId") int userId);
+
+    @PUT("cart/user/{id}")
+    Call<ApiResponse<CartResponse>> updateCart(@Path("id") int userId, @Body UpdateCartRequest request);
+
+    @DELETE("cart")
+    Call<ApiResponse<Boolean>> removeFromCart(@Query("productId") int productId, @Query("userId") int userId);
 
     // --------------------------------CONVERSATION-------------------------------------
      @GET("api/conversations/list/{staffId}")

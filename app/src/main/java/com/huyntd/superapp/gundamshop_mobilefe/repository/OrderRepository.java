@@ -187,10 +187,11 @@ public class OrderRepository {
         void onSuccess(T result);
         void onError(String error);
     }
-    public LiveData<OrderResponse> createOrder(CreateOrderRequest request) {
+
+    public LiveData<OrderResponse> createOrder(CreateOrderRequest request, boolean status) {
         MutableLiveData<OrderResponse> data = new MutableLiveData<>();
 
-        ApiClient.getApiService().createOrder(request)
+        ApiClient.getApiService().createOrder(request, status)
                 .enqueue(new Callback<ApiResponse<OrderResponse>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<OrderResponse>> call,
