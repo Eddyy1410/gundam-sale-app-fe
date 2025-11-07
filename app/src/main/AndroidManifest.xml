@@ -48,6 +48,7 @@
             android:theme="@style/Theme.GundamShopMobileFE" />
         <activity
             android:name=".activities.ChatActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:exported="false" />
         <activity
             android:name=".activities.RegisterEmailActivity"

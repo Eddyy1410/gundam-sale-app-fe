@@ -57,13 +57,25 @@
 
                     <EditText
                         android:id="@+id/etSearch"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginStart="8dp"
                         android:background="@android:color/transparent"
                         android:hint="Bạn muốn mua gì hôm nay?"
                         android:textColor="#757575"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch" />
+
+                    <!-- Icon Filter -->
+                    <ImageView
+                        android:id="@+id/ivFilter"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_filter_list"
+                        app:tint="#757575"
+                        android:layout_marginStart="8dp"/>
 
                 </LinearLayout>
 
