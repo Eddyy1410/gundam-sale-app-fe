@@ -74,10 +74,10 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // 1. Thiết lập Adapter
-        RecyclerView recyclerView = binding.chatRV;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView chatRV = binding.chatRV;
+        chatRV.setLayoutManager(new LinearLayoutManager(this));
         messageAdapter = new MessageAdapter(SessionManager.getInstance(this), new ArrayList<>());
-        recyclerView.setAdapter(messageAdapter);
+        chatRV.setAdapter(messageAdapter);
 
         // 2. Quan sát LiveData
         MessageRepository repository = new MessageRepository(stompClient, customerId, userId, conversationId);
@@ -90,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (messageList != null) {
                     messageAdapter.setMessages(messageList);
                     // Tự động cuộn xuống tin nhắn mới nhất
-                    recyclerView.scrollToPosition(messageList.size() - 1);
+                    chatRV.scrollToPosition(messageList.size() - 1);
                 }
             }
         });
@@ -100,7 +100,7 @@ public class ChatActivity extends AppCompatActivity {
             if (newMessage != null) {
                 // Cập nhật adapter bằng tin nhắn mới
                 messageAdapter.addMessage(newMessage); // Yêu cầu MessageAdapter có addMessage
-                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+                chatRV.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
         });
 

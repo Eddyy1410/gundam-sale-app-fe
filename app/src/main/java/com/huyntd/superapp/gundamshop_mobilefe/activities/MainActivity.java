@@ -20,6 +20,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.MapsFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.ChatsListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private AppStompClient stompClient;
 
     private String userRole;
+
+    String TAG = "MAIN_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
             // Mà ApiClient chỉ được gán token thông qua login --> bị lỗi 1 số api cần bearer token
             ApiClient.setToken(SessionManager.getInstance(MainActivity.this).getAuthToken());
             userRole = sessionManager.getRole();
-//            stompClient = AppStompClient.getInstance(SessionManager.getInstance(MainActivity.this).getAuthToken());
-//            if (stompClient != null) stompClient.connect();
 
             // BẮT ĐẦU SERVICE để nó quản lý việc kết nối và lắng nghe
             startWebSocketService();
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.nav_home) {
                     showProductListFragment();
                 } else if (id == R.id.nav_map) {
-                    // TODO: Thêm chức năng Cửa hàng
+                    showMapsFragment();
                 } else if (id == R.id.nav_notification) {
                     showFavoriteListFragment(); // hoặc màn hình thông báo
                 } else if (id == R.id.nav_profile) {
@@ -169,9 +170,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFavoriteListFragment() {
-
-//        binding.toolbarTitleTv.setText("Favorites");
-
         FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(binding.fragmentsFL.getId(), favoriteListFragment, "FavoriteListFragment");
@@ -179,10 +177,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void showProfileFragment() {
-
-//        binding.toolbarTitleTv.setText("Profile");
-
-        // Navigate to the original ProfileFragment
         ProfileFragment profileFragment = new ProfileFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(binding.fragmentsFL.getId(), profileFragment, "ProfileFragment");
@@ -190,8 +184,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startLoginOptionsActivity() {
-        startActivity(new Intent(this, LoginOptionsActivity.class));
+    private void showMapsFragment() {
+        replaceFragment(new MapsFragment(), TAG);
     }
 
     // Called from fragment_profile.xml via android:onClick
@@ -207,6 +201,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ----------------- COMMON UTILS -----------------
+    private void startLoginOptionsActivity() {
+        startActivity(new Intent(this, LoginOptionsActivity.class));
+    }
+
     private void replaceFragment(Fragment fragment, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(binding.fragmentsFL.getId(), fragment, tag);
@@ -219,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
         // Service sẽ ngay lập tức gọi onCreate() rồi đến onStartCommand()
         ContextCompat.startForegroundService(this, serviceIntent);
     }
-
 
     // ----------------- STAFF FRAGMENTS -----------------
     private void showDashboardFragment() {

@@ -2,13 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Khi cấu hình OpenStreetMap -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Quyền truy cập vị trí-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -17,10 +26,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GundamShopMobileFE"
         android:usesCleartextTraffic="true">
-        <service android:name=".utils.WebSocketService"
-            android:exported="false"
+
+        <meta-data android:name="org.osmdroid.config" android:value="true" />
+
+        <service
+            android:name=".utils.WebSocketService"
             android:enabled="true"
-            android:foregroundServiceType="dataSync"/>
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
         <activity
             android:name=".activities.PaymentWebViewActivity"
             android:exported="false" />
@@ -48,8 +62,8 @@
             android:theme="@style/Theme.GundamShopMobileFE" />
         <activity
             android:name=".activities.ChatActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activities.RegisterEmailActivity"
             android:exported="false" />

@@ -16,6 +16,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterReques
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CountResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.LocationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
@@ -159,4 +160,9 @@ public interface ApiService {
 
     @PUT("api/messages/read")
     Call<ApiResponse<CountResponse>> updateReadMessages(@Body UpdateReadMessageRequest request);
+
+    // ----------------------------------LOCATION---------------------------------------
+    @GET("api/locations")
+    Call<ApiResponse<List<LocationResponse>>> getLocations();
+
 }

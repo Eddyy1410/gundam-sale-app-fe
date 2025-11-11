@@ -1,6 +1,6 @@
 package com.huyntd.superapp.gundamshop_mobilefe.models.response;
 
-import java.util.Date;
+import java.math.BigDecimal;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,11 +14,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ConversationResponse {
-    int conversationId;
-    String customerName;
-    String latestMessageContent;
-    Date latestMessageSentAt;
-    int customerId;
-    int lastestSenderId;
+public class LocationResponse {
+    int id;
+    BigDecimal latitude;
+    BigDecimal longitude;
+    String address;
 }
