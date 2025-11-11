@@ -96,7 +96,7 @@ public interface ApiService {
     Call<ApiResponse<CartResponse>> getCartByUserId(@Path("id") int id);
 
     @POST("cart")
-    Call<ApiResponse<Boolean>> addToCart(@Query("productId") int productId, @Query("userId") int userId);
+    Call<ApiResponse<Boolean>> addToCart(@Query("productId") int productId, @Query("userId") int userId, @Query("quantity") int quantity);
 
     @PUT("cart/user/{id}")
     Call<ApiResponse<CartResponse>> updateCart(@Path("id") int userId, @Body UpdateCartRequest request);

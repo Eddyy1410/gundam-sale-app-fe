@@ -69,10 +69,10 @@ public class CartRepository {
         return data;
     }
 
-    public LiveData<Boolean> addToCart(int userId, int productId) {
+    public LiveData<Boolean> addToCart(int userId, int productId, int quantity) {
         MutableLiveData<Boolean> data = new MutableLiveData<>();
 
-        ApiClient.getApiService().addToCart(productId, userId)
+        ApiClient.getApiService().addToCart(productId, userId, quantity)
                 .enqueue(new Callback<ApiResponse<Boolean>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<Boolean>> call,

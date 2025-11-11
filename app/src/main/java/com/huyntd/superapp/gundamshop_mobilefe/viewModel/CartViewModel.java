@@ -19,9 +19,9 @@ public class CartViewModel extends ViewModel {
         return cartRepository.getCartByUserId(userId);
     }
 
-    public LiveData<Boolean> addToCart(int userId, int productId) {
+    public LiveData<Boolean> addToCart(int userId, int productId, int quantity) {
         isLoading.setValue(true);
-        return cartRepository.addToCart(userId, productId);
+        return cartRepository.addToCart(userId, productId, quantity);
     }
 
     public LiveData<CartResponse> updateCart(int userId, int cartId, java.util.List<com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateCartRequest.CartItemRequest> items) {

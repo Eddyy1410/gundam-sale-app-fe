@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -19,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductImageAdapter;
@@ -154,10 +158,65 @@ public class ProductDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        btnAddToCart.setOnClickListener(v -> addToCart());
+        btnAddToCart.setOnClickListener(v -> showAddToCartPopup());
     }
 
-    private void addToCart() {
+    //Nơi show popup
+    private void showAddToCartPopup() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View view = getLayoutInflater().inflate(R.layout.popup_add_to_cart, null);
+        dialog.setContentView(view);
+
+        // Ánh xạ View
+        ImageView imgProduct = view.findViewById(R.id.imgProduct);
+        TextView tvName = view.findViewById(R.id.tvShopName);
+        TextView tvPrice = view.findViewById(R.id.tvPrice);
+        TextView tvQuantity = view.findViewById(R.id.tvQuantity);
+        ImageButton btnMinus = view.findViewById(R.id.btnMinus);
+        ImageButton btnPlus = view.findViewById(R.id.btnPlus);
+        Button btnBuyNow = view.findViewById(R.id.btnBuyNow);
+
+        // Gán dữ liệu
+        tvPrice.setText(String.format("%,.0f đ", currentProduct.getPrice())); // format đẹp hơn
+        tvName.setText(currentProduct.getName());
+
+        // Load ảnh sản phẩm
+        String imgUrl = (currentProduct.getImageUrls() != null && !currentProduct.getImageUrls().isEmpty())
+                ? currentProduct.getImageUrls().get(0)
+                : null;
+
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imgUrl)
+                    .override(300, 300)
+                    .centerCrop()
+                    .into(imgProduct);
+        }
+
+        // Tăng giảm số lượng
+        btnMinus.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(tvQuantity.getText().toString());
+            if (quantity > 1) tvQuantity.setText(String.valueOf(quantity - 1));
+        });
+
+        btnPlus.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(tvQuantity.getText().toString());
+            tvQuantity.setText(String.valueOf(quantity + 1));
+        });
+
+        // Xử lý khi ấn "Mua ngay"
+        btnBuyNow.setOnClickListener(v -> {
+            Toast.makeText(this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            addToCart(Integer.parseInt(tvQuantity.getText().toString()));
+        });
+
+        dialog.show();
+    }
+
+
+
+    private void addToCart(int quantity) {
         if (!sessionManager.isLoggedIn()) {
             Toast.makeText(this, "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show();
             return;
@@ -178,7 +237,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             int userId = Integer.parseInt(userIdStr);
             int productId = currentProduct.getId();
 
-            cartViewModel.addToCart(userId, productId).observe(this, success -> {
+            cartViewModel.addToCart(userId, productId, quantity).observe(this, success -> {
                 if (success != null && success) {
                     Toast.makeText(this, "Đã thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                 } else {
