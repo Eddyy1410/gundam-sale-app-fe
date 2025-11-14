@@ -122,6 +122,13 @@ public class LoginEmailActivity extends AppCompatActivity {
             }
         });
 
+        binding.forgotPasswordTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginEmailActivity.this, ForgotPasswordEmailActivity.class));
+            }
+        });
+
     }
 
     private void startMainActivity() {

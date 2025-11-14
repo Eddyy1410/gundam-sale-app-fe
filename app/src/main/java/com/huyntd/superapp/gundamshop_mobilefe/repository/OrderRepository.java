@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
-import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.CreateOrderRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
@@ -109,6 +109,52 @@ public class OrderRepository {
         return data;
     }
 
+    public LiveData<List<OrderResponse>> getOrdersByStatus(int userId, String status) {
+        MutableLiveData<List<OrderResponse>> data = new MutableLiveData<>();
+
+        // Gọi API với page = 0, size = 100 (hoặc tùy theo BE config)
+        ApiClient.getApiService().getOrdersByStatusAndUserId(userId, status)
+                .enqueue(new Callback<ApiResponse<PageResponse<OrderResponse>>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse<PageResponse<OrderResponse>>> call,
+                                           Response<ApiResponse<PageResponse<OrderResponse>>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            ApiResponse<PageResponse<OrderResponse>> apiResponse = response.body();
+
+                            Log.d("OrderRepository", "✅ Full Response: " + new Gson().toJson(apiResponse));
+
+                            if (apiResponse.isSuccess()
+                                    && apiResponse.getResult() != null
+                                    && apiResponse.getResult().getContent() != null) {
+
+                                data.setValue(apiResponse.getResult().getContent());
+                                Log.d("OrderRepository", "✅ Loaded orders successfully for status: " + status);
+
+                            } else {
+                                data.setValue(Collections.emptyList());
+                                Log.w("OrderRepository", "⚠️ No orders found or API returned empty content");
+                            }
+
+                        } else {
+                            try {
+                                Log.e("OrderRepository", "❌ API failed: " + response.message() +
+                                        " | Error body: " + response.errorBody().string());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse<PageResponse<OrderResponse>>> call, Throwable t) {
+                        Log.e("OrderRepository", "🚨 Error loading orders by status: " + t.getMessage(), t);
+                    }
+                });
+
+        return data;
+    }
+
+
     public void getOrdersToday(
             int page,
             int size,
@@ -165,6 +211,48 @@ public class OrderRepository {
     public interface RepositoryCallback<T> {
         void onSuccess(T result);
         void onError(String error);
+    }
+
+    public LiveData<OrderResponse> createOrder(CreateOrderRequest request, boolean status) {
+        MutableLiveData<OrderResponse> data = new MutableLiveData<>();
+
+        ApiClient.getApiService().createOrder(request, status)
+                .enqueue(new Callback<ApiResponse<OrderResponse>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse<OrderResponse>> call,
+                                           Response<ApiResponse<OrderResponse>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            ApiResponse<OrderResponse> apiResponse = response.body();
+
+                            Log.d("OrderRepository", "✅ CreateOrder Response: " + new Gson().toJson(apiResponse));
+
+                            if (apiResponse.isSuccess() && apiResponse.getResult() != null) {
+                                data.setValue(apiResponse.getResult());
+                                Log.d("OrderRepository", "✅ Order created successfully: " + apiResponse.getResult().getId());
+                            } else {
+                                data.setValue(null);
+                                Log.w("OrderRepository", "⚠️ Order creation failed: Empty result");
+                            }
+
+                        } else {
+                            try {
+                                Log.e("OrderRepository", "❌ API failed: " + response.message() +
+                                        " | Error body: " + response.errorBody().string());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            data.setValue(null);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse<OrderResponse>> call, Throwable t) {
+                        Log.e("OrderRepository", "🚨 Error creating order: " + t.getMessage(), t);
+                        data.setValue(null);
+                    }
+                });
+
+        return data;
     }
 
 }

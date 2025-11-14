@@ -5,6 +5,7 @@
     android:id="@+id/FrameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".activities.ChatActivity">
 
   <RelativeLayout
@@ -31,12 +32,13 @@
         android:layout_toStartOf="@id/toolbarTitleTv"
         android:layout_marginEnd="5dp"
         app:shapeAppearanceOverlay="@style/ImageStyle_Circle"/>
-    
+
     <TextView
         android:id="@+id/toolbarTitleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Chat With Shop"
+        android:textStyle="bold"
         android:layout_centerInParent="true"
         style="@style/TextAppearance.MaterialComponents.Body1"/>
 
@@ -54,8 +56,10 @@
       android:layout_height="match_parent"
       android:layout_above="@id/view1"
       android:layout_below="@id/toolbarRL"
+      android:layout_marginStart="0dp"
       android:layout_marginTop="0dp"
       android:layout_marginBottom="0dp"
+      android:background="@drawable/chat_bg"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       tools:listitem="@layout/item_message_right" />
 
@@ -71,8 +75,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
-      android:layout_margin="5dp">
-    
+      android:layout_margin="5dp"
+      android:elevation="2dp">
+
     <EditText
         android:id="@+id/messageEt"
         android:layout_width="match_parent"

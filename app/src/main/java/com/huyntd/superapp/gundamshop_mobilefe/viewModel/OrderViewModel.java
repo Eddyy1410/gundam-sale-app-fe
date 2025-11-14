@@ -3,6 +3,7 @@ package com.huyntd.superapp.gundamshop_mobilefe.viewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.CreateOrderRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.repository.OrderRepository;
 
@@ -18,5 +19,14 @@ public class OrderViewModel extends ViewModel {
     public LiveData<OrderResponse> getOrderDetail(int orderId){
         return orderRepository.getOrdersById(orderId);
     }
+
+    public LiveData<List<OrderResponse>> getOrdersByStatus(int userId, String status) {
+        return orderRepository.getOrdersByStatus(userId, status);
+    }
+
+    public LiveData<OrderResponse> createNewOrder(CreateOrderRequest request, boolean status) {
+        return orderRepository.createOrder(request, status);
+    }
+
 }
 

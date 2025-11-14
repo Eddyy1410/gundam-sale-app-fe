@@ -15,10 +15,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConversationResponse {
-    private int conversationId;
-    private String customerName;
-    private String latestMessageContent;
-    private Date latestMessageSentAt;
-    private int customerId;
-    private int lastestSenderId;
+    int conversationId;
+    String customerName;
+    String latestMessageContent;
+    Date latestMessageSentAt;
+    int customerId;
+    int lastestSenderId;
 }

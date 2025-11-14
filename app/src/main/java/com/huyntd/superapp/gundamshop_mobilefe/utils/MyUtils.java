@@ -1,8 +1,15 @@
 package com.huyntd.superapp.gundamshop_mobilefe.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Base64;
 import android.widget.Toast;
+
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONObject;
 
@@ -34,6 +41,20 @@ public class MyUtils {
         return null;
     }
 
+    public static Drawable getScaledVectorDrawable(Context context, @DrawableRes int drawableResId, int sizeDp) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableResId);
+        if (drawable == null) return null;
 
+        // Chuyển DP → pixel
+        float scale = context.getResources().getDisplayMetrics().density;
+        int sizePx = (int) (sizeDp * scale + 0.5f);
 
+        // Vẽ lại vector lên bitmap với kích thước mới
+        Bitmap bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, sizePx, sizePx);
+        drawable.draw(canvas);
+
+        return new BitmapDrawable(context.getResources(), bitmap);
+    }
 }

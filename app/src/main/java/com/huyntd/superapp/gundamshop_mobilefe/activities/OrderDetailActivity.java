@@ -11,18 +11,14 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.OrderDetailAdapter;
-import com.huyntd.superapp.gundamshop_mobilefe.adapter.OrdersAdapter;
-import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.OrderViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.UserViewModel;
 
@@ -55,23 +51,9 @@ public class OrderDetailActivity extends AppCompatActivity {
         });
 
         // --- Ánh xạ view ---
-        tvOrderCode = findViewById(R.id.tvOrderCode);
-        tvOrderDate = findViewById(R.id.tvOrderDate);
-        tvStatusDelivered = findViewById(R.id.tvStatusDelivered);
+        mappingViews();
 
-        tvTotalPrice = findViewById(R.id.tvTotalPrice);
-        tvPaymentMethod = findViewById(R.id.tvPaymentMethod);
-        tvShipping = findViewById(R.id.tvShipping);
-        tvFinalPrice = findViewById(R.id.tvFinalPrice);
-
-        tvCustomerName = findViewById(R.id.tvCustomerName);
-        tvCustomerEmail = findViewById(R.id.tvCustomerEmail);
-        tvCustomerPhone = findViewById(R.id.tvCustomerPhone);
-        tvCustomerAddress = findViewById(R.id.tvCustomerAddress);
-
-        rvOrderItems = findViewById(R.id.rvOrderItems);
-        btnBack = findViewById(R.id.btnBack);
-
+        //----Lấy intent gửi từ màn hình khác sang-----
         Intent intent = getIntent();
         int orderId = intent.getIntExtra("orderId",0);
 
@@ -107,7 +89,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 //Chỉnh màu trạng thái đơn hàng
                 tvStatusDelivered.setText(order.getStatus());
                 // Màu mặc định
-                int color = Color.parseColor("#FFD700"); // vàng
+                int color = Color.parseColor("#ccac00"); // vàng
                 String status = order.getStatus().toUpperCase();
 
                 if (status.equals("CANCELLED") || status.equals("RETURNED")) {
@@ -140,5 +122,24 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
 
+    }
+
+    private void mappingViews() {
+        tvOrderCode = findViewById(R.id.tvOrderCode);
+        tvOrderDate = findViewById(R.id.tvOrderDate);
+        tvStatusDelivered = findViewById(R.id.tvStatusDelivered);
+
+        tvTotalPrice = findViewById(R.id.tvTotalPrice);
+        tvPaymentMethod = findViewById(R.id.tvPaymentMethod);
+        tvShipping = findViewById(R.id.tvShipping);
+        tvFinalPrice = findViewById(R.id.tvFinalPrice);
+
+        tvCustomerName = findViewById(R.id.tvCustomerName);
+        tvCustomerEmail = findViewById(R.id.tvCustomerEmail);
+        tvCustomerPhone = findViewById(R.id.tvCustomerPhone);
+        tvCustomerAddress = findViewById(R.id.tvCustomerAddress);
+
+        rvOrderItems = findViewById(R.id.rvOrderItems);
+        btnBack = findViewById(R.id.btnBack);
     }
 }

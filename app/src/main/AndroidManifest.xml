@@ -3,9 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Khi cấu hình OpenStreetMap -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Quyền truy cập vị trí-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -14,6 +26,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GundamShopMobileFE"
         android:usesCleartextTraffic="true">
+
+        <meta-data android:name="org.osmdroid.config" android:value="true" />
+
+        <service
+            android:name=".utils.WebSocketService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <activity
+            android:name=".activities.PaymentWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CheckoutActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.OrderDetailActivity"
             android:exported="false" />
@@ -48,7 +78,8 @@
 
         <activity
             android:name=".activities.ChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activities.RegisterEmailActivity"
             android:exported="false" />
@@ -59,12 +90,49 @@
             android:name=".activities.LoginOptionsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ForgotPasswordEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgotPasswordOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgotPasswordResetActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.PaymentSuccessActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-success"
+                    android:scheme="myapp" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.PaymentFailedActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-failed"
+                    android:scheme="myapp" />
             </intent-filter>
         </activity>
     </application>

@@ -11,4 +11,10 @@
         android:gravity="center"
         android:text="Favorite List" />
 
+    <Button
+        android:id="@+id/btnBuyCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
 </FrameLayout>

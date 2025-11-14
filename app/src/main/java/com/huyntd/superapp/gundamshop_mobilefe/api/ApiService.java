@@ -1,10 +1,23 @@
 package com.huyntd.superapp.gundamshop_mobilefe.api;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.AuthenticationRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.CreateOrderRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.ChangePasswordRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.DeleteAccountRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.GoogleTokenRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.LogoutRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.PaymentRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.ResetPasswordRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateReadMessageRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserProfileUpdateRequest;
+import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateCartRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UserRegisterRequest;
 
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.AuthenticationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.CountResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.LocationResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.MessageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.UserResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
@@ -13,9 +26,11 @@ import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -44,11 +59,34 @@ public interface ApiService {
     @POST("auth/google-android")
     Call<ApiResponse<AuthenticationResponse>> loginGoogle(@Body GoogleTokenRequest request);
 
-    @POST("user/")
+    @POST("user/register")
     Call<ApiResponse<UserResponse>> register(@Body UserRegisterRequest request);
 
     @GET("user/myInfo")
     Call<ApiResponse<UserResponse>> getInfo();
+
+    @POST("/auth/logout")
+    Call<ApiResponse<Void>> logout(@Body LogoutRequest request);
+
+    @POST("/auth/change-password")
+    Call<ApiResponse<Void>> changePassword(@Body ChangePasswordRequest request);
+
+    // Forgot / Reset password
+    @POST("auth/forgot-password")
+    Call<ApiResponse<Void>> forgotPassword(@Query("email") String email);
+
+    @POST("auth/reset-password")
+    Call<ApiResponse<String>> resetPassword(@Body ResetPasswordRequest request);
+
+    // Verify reset code (accepts email+code). Uses a Map payload in callers, so expose a Map<String,String> body here.
+    @POST("auth/verify-reset-code")
+    Call<ApiResponse<Void>> verifyResetCode(@Body java.util.Map<String, String> payload);
+
+    @PUT("user/me")
+    Call<ApiResponse<UserResponse>> updateMyProfile(@Body UserProfileUpdateRequest request);
+
+    @retrofit2.http.HTTP(method = "DELETE", path = "user/me", hasBody = true)
+    Call<ApiResponse<Void>> deleteMyAccount(@Body DeleteAccountRequest request);
 
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")
@@ -68,7 +106,7 @@ public interface ApiService {
     @GET("order/user/{id}")
     Call<ApiResponse<PageResponse<OrderResponse>>> getOrdersByUserId(@Path("id") int id);
 
-    @GET("order/user/{id}")
+    @GET("order/status/user/{id}")
     Call<ApiResponse<PageResponse<OrderResponse>>> getOrdersByStatusAndUserId(@Path("id") int id,
             @Query("status") String status);
 
@@ -89,6 +127,28 @@ public interface ApiService {
             @Query("status") String status
     );
 
+    @POST("order")
+    Call<ApiResponse<OrderResponse>> createOrder(@Body CreateOrderRequest request, @Query("status") boolean status);
+
+    //---------------------------------PAYMENT------------------------------------------
+    @POST("payment/vnpay-create-payment")
+    Call<ApiResponse<Map<String, String>>> createVNPAYPayment(@Body PaymentRequest request);
+    @POST("payment/momo-create-payment")
+    Call<ApiResponse<Map<String, String>>> createMomoPayment(@Body PaymentRequest request);
+
+    //-----------------------------------CART-------------------------------------------
+    @GET("cart/user/{id}")
+    Call<ApiResponse<CartResponse>> getCartByUserId(@Path("id") int id);
+
+    @POST("cart")
+    Call<ApiResponse<Boolean>> addToCart(@Query("productId") int productId, @Query("userId") int userId);
+
+    @PUT("cart/user/{id}")
+    Call<ApiResponse<CartResponse>> updateCart(@Path("id") int userId, @Body UpdateCartRequest request);
+
+    @DELETE("cart")
+    Call<ApiResponse<Boolean>> removeFromCart(@Query("productId") int productId, @Query("userId") int userId);
+
     // --------------------------------CONVERSATION-------------------------------------
     // @GET("api/conversations")
     // Call<ApiResponse<ConversationResponse>> getConversations();
@@ -107,4 +167,22 @@ public interface ApiService {
     Call<Long> getLowStockCount(@Query("threshold") int threshold);
      @GET("api/conversations/list/{staffId}")
      Call<ApiResponse<List<ConversationResponse>>> getConversations(@Path("staffId") int id);
+
+     @GET("api/conversations/{customerId}")
+     Call<ApiResponse<ConversationResponse>> getConversationByCustomerId(@Path("customerId") int id);
+
+    // ----------------------------------MESSAGE----------------------------------------
+    @GET("api/messages/{customerId}")
+    Call<ApiResponse<List<MessageResponse>>> getMessages(@Path("customerId") int id);
+
+    @GET("api/messages/unread/{receiverId}")
+    Call<ApiResponse<CountResponse>> countUnreadMessages(@Path("receiverId") int id);
+
+    @PUT("api/messages/read")
+    Call<ApiResponse<CountResponse>> updateReadMessages(@Body UpdateReadMessageRequest request);
+
+    // ----------------------------------LOCATION---------------------------------------
+    @GET("api/locations")
+    Call<ApiResponse<List<LocationResponse>>> getLocations();
+
 }

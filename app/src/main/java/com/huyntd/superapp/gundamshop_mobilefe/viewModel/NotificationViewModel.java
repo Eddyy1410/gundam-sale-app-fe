@@ -1,0 +1,52 @@
+package com.huyntd.superapp.gundamshop_mobilefe.viewModel;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.huyntd.superapp.gundamshop_mobilefe.repository.NotificationRepository;
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class NotificationViewModel extends ViewModel {
+
+    final NotificationRepository repository;
+    final LiveData<Integer> chatBadgeCount;
+    final LiveData<String> generalNotification;
+    final MediatorLiveData<Integer> badgeLiveData = new MediatorLiveData<>();
+
+    public NotificationViewModel(NotificationRepository repository) {
+        this.repository = repository;
+        // 1. Tải số đếm ban đầu khi ViewModel được tạo
+        repository.fetchInitialBadgeCount();
+        // QUAN TRỌNG: để có thể lấy dữ liệu real-time LiveData từ repo
+        repository.startListeningForPersistenQueues();
+
+        // 3. Lấy LiveData cho các loại thông báo
+        this.chatBadgeCount = repository.getChatBadgeCount();
+        this.generalNotification = repository.getGeneralNotification();
+    }
+
+    // Getter cho LiveData Badge Count
+    public LiveData<Integer> getChatBadgeCount() {
+        return chatBadgeCount;
+    }
+
+    // Getter cho LiveData Thông báo Chung
+    public LiveData<String> getGeneralNotification() {
+        return generalNotification;
+    }
+
+    // Khi Activity/Fragment resume, bạn có thể gọi hàm này
+    public void refreshBadgeManually() {
+        badgeLiveData.setValue(repository.getChatBadgeCount().getValue());
+    }
+
+    // Dọn dẹp khi ViewModel bị hủy
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+    }
+}

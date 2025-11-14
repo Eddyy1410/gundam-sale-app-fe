@@ -20,19 +20,26 @@ import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.databinding.ActivityMainBinding;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.MapsFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.ChatsListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.FavoriteListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProductListFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.ProfileFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.fragments.PersonalInfoFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.DashboardFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.QuickOrderFragment;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.WebSocketService;
 
 public class MainActivity extends AppCompatActivity {
     //View binding
     private ActivityMainBinding binding;
     private SessionManager sessionManager;
+    private AppStompClient stompClient;
 
     private String userRole;
+
+    String TAG = "MAIN_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(0, bars.top, 0, 0);
             return insets;
         });
+
         sessionManager = SessionManager.getInstance(MainActivity.this);
         if (!sessionManager.isLoggedIn()) {
             startLoginOptionsActivity();
@@ -62,11 +70,13 @@ public class MainActivity extends AppCompatActivity {
             // Mà ApiClient chỉ được gán token thông qua login --> bị lỗi 1 số api cần bearer token
             ApiClient.setToken(SessionManager.getInstance(MainActivity.this).getAuthToken());
             userRole = sessionManager.getRole();
+
+            // BẮT ĐẦU SERVICE để nó quản lý việc kết nối và lắng nghe
+            startWebSocketService();
+
+            System.out.println("Start hereeeee");
+            setupBottomNavigationForRole(userRole);
         }
-
-        System.out.println("Start hereeeee");
-
-        setupBottomNavigationForRole(userRole);
     }
 
     /**
@@ -103,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_chat) {
                     showChatsListFragment();
                     return true;
+                } else if (id == R.id.nav_profile) {
+                    showProfileFragment();
                 }
 //                } else if (id == R.id.nav_search) {
 //                    showProductSearchFragment();
@@ -128,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.nav_home) {
                     showProductListFragment();
                 } else if (id == R.id.nav_map) {
-                    // TODO: Thêm chức năng Cửa hàng
+                    showMapsFragment();
                 } else if (id == R.id.nav_notification) {
                     showFavoriteListFragment(); // hoặc màn hình thông báo
                 } else if (id == R.id.nav_profile) {
@@ -158,9 +170,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFavoriteListFragment() {
-
-//        binding.toolbarTitleTv.setText("Favorites");
-
         FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(binding.fragmentsFL.getId(), favoriteListFragment, "FavoriteListFragment");
@@ -168,9 +177,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void showProfileFragment() {
-
-//        binding.toolbarTitleTv.setText("Profile");
-
         ProfileFragment profileFragment = new ProfileFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(binding.fragmentsFL.getId(), profileFragment, "ProfileFragment");
@@ -178,31 +184,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void handleShowChat() {
-//        SessionManager sessionManager = SessionManager.getInstance(this);
-//        String userRole = sessionManager.getRole();
-//        if("STAFF".equalsIgnoreCase(userRole)){
-//            showChatsListFragment();
-//        } else if ("CUSTOMER".equalsIgnoreCase(userRole)) {
-//            show
-//        }
-//    }
+    private void showMapsFragment() {
+        replaceFragment(new MapsFragment(), TAG);
+    }
 
+    // Called from fragment_profile.xml via android:onClick
+    public void openPersonalInfo(android.view.View view) {
+        android.util.Log.d("MainActivity", "openPersonalInfo clicked");
+        android.widget.Toast.makeText(this, "Opening Thông tin cá nhân", android.widget.Toast.LENGTH_SHORT).show();
+        PersonalInfoFragment personalInfoFragment = new PersonalInfoFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(binding.fragmentsFL.getId(), personalInfoFragment, "PersonalInfoFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // ----------------- COMMON UTILS -----------------
     private void startLoginOptionsActivity() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
     }
 
-    // ----------------- COMMON UTILS -----------------
     private void replaceFragment(Fragment fragment, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(binding.fragmentsFL.getId(), fragment, tag);
         ft.commit();
     }
 
-    private void startChatActivity() {
-        startActivity(new Intent(this, ChatActivity.class));
+    private void startWebSocketService() {
+        Intent serviceIntent = new Intent(this, WebSocketService.class);
+        // Sử dụng startForegroundService để tuân thủ quy tắc Android O+
+        // Service sẽ ngay lập tức gọi onCreate() rồi đến onStartCommand()
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
-
 
     // ----------------- STAFF FRAGMENTS -----------------
     private void showDashboardFragment() {

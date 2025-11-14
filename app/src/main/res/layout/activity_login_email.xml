@@ -113,6 +113,21 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Forgot password link (clickable) -->
+        <TextView
+            android:id="@+id/forgotPasswordTv"
+            style="@style/TextAppearance.Material3.BodySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordTil"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/forgot_password"
+            android:textColor="?attr/colorPrimary"
+            android:clickable="true"
+            android:focusable="true" />
+
         <TextView
             android:id="@+id/noAccountTv"
             style="@style/TextAppearance.Material3.BodyMedium"

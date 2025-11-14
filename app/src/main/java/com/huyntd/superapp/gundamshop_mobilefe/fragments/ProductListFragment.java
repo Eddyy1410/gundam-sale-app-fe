@@ -5,9 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,14 +19,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.CartActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ChatActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.ProductDetailActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.ProductListAdapter;
+import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
+import com.huyntd.superapp.gundamshop_mobilefe.models.response.ConversationResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.ProductResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.repository.ConversationRepository;
+import com.huyntd.superapp.gundamshop_mobilefe.repository.NotificationRepository;
 import com.huyntd.superapp.gundamshop_mobilefe.ui.theme.GridSpacingItemDecoration;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ConversationViewModel;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.NotificationViewModel;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.ProductListViewModel;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.factory.ConversationViewModelFactory;
+import com.huyntd.superapp.gundamshop_mobilefe.viewModel.factory.NotificationViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +49,18 @@ import java.util.List;
  */
 public class ProductListFragment extends Fragment {
 
+    private SessionManager sessionManager = SessionManager.getInstance(getContext());
+    private AppStompClient stompClient = AppStompClient.getInstance(SessionManager.getInstance(getContext()).getAuthToken());
+
     private ProductListViewModel viewModel;
+    private ConversationViewModel conversationViewModel;
+    private NotificationViewModel notificationViewModel;
     private ProductListAdapter adapter;
     private List<ProductResponse> allProducts = new ArrayList<>();
 
+    final String TAG = "PRODUCT_LIST_FRAGMENT";
+
+    TextView tvChatBadge;
 
     @Nullable
     @Override
@@ -54,6 +73,10 @@ public class ProductListFragment extends Fragment {
         EditText etSearch = view.findViewById(R.id.etSearch);
         ImageView ivCart = view.findViewById(R.id.ivCart);
         ImageView ivChat = view.findViewById(R.id.ivChat);
+        tvChatBadge = view.findViewById(R.id.tvChatBadge);
+
+        // Khởi tạo SessionManager
+        sessionManager = SessionManager.getInstance(requireContext()); // Dùng requireContext() trong Fragment
 
         // Setup RecyclerView
         adapter = new ProductListAdapter();
@@ -103,18 +126,63 @@ public class ProductListFragment extends Fragment {
         // Cart click listener
         ivCart.setOnClickListener(v ->
                         // TODO: mở màn hình giỏ hàng (ví dụ CartActivity)
-                        // startActivity(new Intent(requireContext(), CartActivity.class));
-                {}
+                         startActivity(new Intent(requireContext(), CartActivity.class))
         );
 
+        // Chat click listener
+        // ReactJS có props, thì Intent có extras --> truyền dữ liệu giữa các Intent
         ivChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), ChatActivity.class));
+                ConversationRepository repository = new ConversationRepository(ApiClient.getApiService(), sessionManager);
+                ConversationViewModelFactory factory = new ConversationViewModelFactory(repository);
+                conversationViewModel = new ViewModelProvider(getActivity(), factory).get(ConversationViewModel.class);
+
+                conversationViewModel.getConversationByCustomerId(SessionManager.getInstance(getActivity()).getUserId())
+                        .observe(getActivity(), new Observer<ConversationResponse>() {
+                            @Override
+                            public void onChanged(ConversationResponse conversation) {
+                                Log.i(TAG, "onChanged: Inside conversationVM");
+                                Log.i(TAG, "conversation: "+conversation);
+                                if (conversation != null) {
+                                    Intent intent = new Intent(getActivity(), ChatActivity.class);
+                                    intent.putExtra("CUSTOMER_ID", SessionManager.getInstance(getActivity()).getUserId());
+                                    intent.putExtra("CONVERSATION_ID", String.valueOf(conversation.getConversationId()));
+                                    //Log.i(TAG, "conversation ID type: "+((Object)conversation.getConversationId()).getClass().getName());
+                                    startActivity(intent);
+                                }
+                            }
+                        });
             }
         });
 
+        setupBadgeViewModel();
+
         return view;
+    }
+
+    // --- SETUP VÀ OBSERVE NOTIFICATION VIEWMODEL CHO BADGE ---
+    private void setupBadgeViewModel() {
+        // 1. Khởi tạo NotificationRepository (cần StompClient và UserId)
+        NotificationRepository notificationRepository = new NotificationRepository(stompClient, sessionManager.getUserId());
+        NotificationViewModelFactory factory = new NotificationViewModelFactory(notificationRepository);
+        notificationViewModel = new ViewModelProvider(this, factory).get(NotificationViewModel.class);
+
+        // 3. Bắt đầu lắng nghe STOMP (nếu cần ngay khi Fragment hiển thị)
+        // hoặc để ViewModel tự quản lý trong constructor của nó
+        // notificationRepository.startListeningForPersistentTopics(); // Nếu ViewModel chưa gọi
+
+        // 4. Observe LiveData cho Badge Count
+        //
+        notificationViewModel.getChatBadgeCount().observe(getViewLifecycleOwner(), unreadCount -> {
+            Log.i(TAG, "unreadCount: " + unreadCount);
+            if (unreadCount != null && unreadCount > 0) {
+                tvChatBadge.setText(String.valueOf(unreadCount));
+                tvChatBadge.setVisibility(View.VISIBLE);
+            } else {
+                tvChatBadge.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void filterProducts(String query) {
@@ -131,5 +199,18 @@ public class ProductListFragment extends Fragment {
             }
         }
         adapter.setProducts(filtered);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        tvChatBadge.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Dọn dẹp các Disposable của ViewModel nếu cần (nếu ViewModel không tự dọn)
+        // NotificationViewModel sẽ gọi onCleared(), nên Repository sẽ stopListening
     }
 }

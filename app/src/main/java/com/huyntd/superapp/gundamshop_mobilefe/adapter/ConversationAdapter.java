@@ -1,5 +1,6 @@
 package com.huyntd.superapp.gundamshop_mobilefe.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     final int staffId;
     List<ConversationResponse> conversationList;
+    String TAG = "CONVERSATION_ADAPTER_TAG";
 
     public ConversationAdapter(int staffId, List<ConversationResponse> list) {
         this.staffId = staffId;
@@ -52,6 +54,19 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
+    // 1. Định nghĩa Interface
+    public interface OnItemClickListener {
+        // Method sẽ được gọi khi item được click
+        void onItemClick(ConversationResponse conversation);
+    }
+
+    private OnItemClickListener listener;
+
+    // 2. Setter để Fragment truyền tham chiếu vào
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     class ConversationViewHolder extends RecyclerView.ViewHolder {
         private TextView customerName;
         private TextView lastestMessage;
@@ -62,6 +77,14 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             customerName = itemView.findViewById(R.id.customerNameTv);
             lastestMessage = itemView.findViewById(R.id.lastMessageTv);
             timeStamp = itemView.findViewById(R.id.chatTimestampTv);
+
+            itemView.setOnClickListener(v -> {
+                int position = getAbsoluteAdapterPosition();
+                Log.i(TAG, "ConversationViewHolder: ");
+                if (listener != null) {
+                    listener.onItemClick(conversationList.get(position));
+                }
+            });
         }
 
         public void bind(ConversationResponse conversation) {

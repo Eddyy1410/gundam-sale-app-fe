@@ -284,6 +284,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="430dp"
                 android:layout_marginTop="@dimen/padding_md" />
+
+            <!-- ✅ Giao diện khi danh sách rỗng -->
+            <TextView
+                android:id="@+id/tv_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bạn chưa có đơn hàng nào."
+                android:textSize="16sp"
+                android:gravity="center"
+                android:padding="24dp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

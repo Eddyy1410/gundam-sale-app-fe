@@ -3,7 +3,6 @@ package com.huyntd.superapp.gundamshop_mobilefe.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,7 +43,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         ProductResponse product = products.get(position);
         holder.tvName.setText(product.getName());
-        holder.tvPrice.setText(product.getPrice().toString());
+        holder.tvPrice.setText(String.format("%,.0f₫", product.getPrice().doubleValue()));
+        holder.tvProductDescription.setText(product.getBriefDescription());
 
         if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -65,14 +65,16 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvPrice;
+        TextView tvName, tvPrice, tvProductDescription;
         ImageView ivProduct;
+
 
         ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvProductName);
             tvPrice = itemView.findViewById(R.id.tvProductPrice);
             ivProduct = itemView.findViewById(R.id.ivProductImage);
+            tvProductDescription = itemView.findViewById(R.id.tvProductDescription);
         }
     }
 }
