@@ -26,10 +26,10 @@ public class ProductRepository {
 //        this.apiService = apiService;
 //    }
 
-    public LiveData<List<ProductResponse>> getProducts() {
+    public LiveData<List<ProductResponse>> getProducts(String sort) {
         MutableLiveData<List<ProductResponse>> data = new MutableLiveData<>();
 
-        apiService.getProducts().enqueue(new Callback<ApiResponse<PageResponse<ProductResponse>>>() {
+        apiService.getProducts(sort).enqueue(new Callback<ApiResponse<PageResponse<ProductResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<PageResponse<ProductResponse>>> call, Response<ApiResponse<PageResponse<ProductResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {

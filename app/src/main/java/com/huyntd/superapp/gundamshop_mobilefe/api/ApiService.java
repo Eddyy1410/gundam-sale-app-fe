@@ -91,7 +91,9 @@ public interface ApiService {
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")
     @SkipAuth
-    Call<ApiResponse<PageResponse<ProductResponse>>> getProducts();
+    Call<ApiResponse<PageResponse<ProductResponse>>> getProducts(
+            @Query("sort") String sort
+    );
 
     @GET("api/products/{id}")
     Call<ApiResponse<ProductResponse>> getProduct(@Path("id") int id);

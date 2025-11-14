@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.CartActivity;
@@ -72,6 +73,7 @@ public class ProductListFragment extends Fragment {
         RecyclerView rvProducts = view.findViewById(R.id.rvProducts);
         EditText etSearch = view.findViewById(R.id.etSearch);
         ImageView ivCart = view.findViewById(R.id.ivCart);
+        ImageView ivFilter = view.findViewById(R.id.ivFilter);
         ImageView ivChat = view.findViewById(R.id.ivChat);
         tvChatBadge = view.findViewById(R.id.tvChatBadge);
 
@@ -92,22 +94,11 @@ public class ProductListFragment extends Fragment {
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
         rvProducts.addItemDecoration(new GridSpacingItemDecoration(2, spacingInPixels, true));
         rvProducts.setAdapter(adapter);
+        ivFilter.setOnClickListener(v -> openSortDialog());
 
         // ViewModel
         viewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
-        viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            if (products != null) {
-                allProducts.clear();
-                allProducts.addAll(products);
-                adapter.setProducts(products);
-                Log.d("ProductListFragment", "API returned " + products.size() + " products");
-                for (ProductResponse p : products) {
-                    Log.d("ProductListFragment", "Product: " + p.getName() + " - " + p.getPrice());
-                }
-            } else{
-                Log.d("ProductListFragment", "API returned null");
-            }
-        });
+        observeProducts("price,asc");
 
         // Search listener
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -200,6 +191,54 @@ public class ProductListFragment extends Fragment {
         }
         adapter.setProducts(filtered);
     }
+
+    private void openSortDialog() {
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
+        View sheet = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_sort_product, null);
+
+        TextView sortNameAsc = sheet.findViewById(R.id.sortNameAsc);
+        TextView sortNameDesc = sheet.findViewById(R.id.sortNameDesc);
+        TextView sortPriceAsc = sheet.findViewById(R.id.sortPriceAsc);
+        TextView sortPriceDesc = sheet.findViewById(R.id.sortPriceDesc);
+
+        sortNameAsc.setOnClickListener(v -> {
+            observeProducts("name,asc");
+            dialog.dismiss();
+        });
+
+        sortNameDesc.setOnClickListener(v -> {
+            observeProducts("name,desc");
+            dialog.dismiss();
+        });
+
+        sortPriceAsc.setOnClickListener(v -> {
+            observeProducts("price,asc");
+            dialog.dismiss();
+        });
+
+        sortPriceDesc.setOnClickListener(v -> {
+            observeProducts("price,desc");
+            dialog.dismiss();
+        });
+
+        dialog.setContentView(sheet);
+        dialog.show();
+    }
+
+    private void observeProducts(String sort) {
+        viewModel.getProducts(sort).observe(getViewLifecycleOwner(), products -> {
+            if (products != null) {
+                allProducts.clear();
+                allProducts.addAll(products);
+                adapter.setProducts(products);
+                Log.d("ProductListFragment", "Updated " + products.size() + " products");
+            }
+        });
+    }
+
+
+
 
     @Override
     public void onResume() {
