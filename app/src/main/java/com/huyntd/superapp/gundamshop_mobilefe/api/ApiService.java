@@ -91,7 +91,9 @@ public interface ApiService {
     //-----------------------------------PRODUCT------------------------------------------
     @GET("api/products")
     @SkipAuth
-    Call<ApiResponse<PageResponse<ProductResponse>>> getProducts();
+    Call<ApiResponse<PageResponse<ProductResponse>>> getProducts(
+            @Query("sort") String sort
+    );
 
     @GET("api/products/{id}")
     Call<ApiResponse<ProductResponse>> getProduct(@Path("id") int id);
@@ -121,6 +123,11 @@ public interface ApiService {
             @Query("sortDir") String sortDir,
             @Query("status") String status
     );
+    @PUT("order/{id}/status")
+    Call<ApiResponse<OrderResponse>> updateOrderStatus(
+            @Path("id") int id,
+            @Query("status") String status
+    );
 
     @POST("order")
     Call<ApiResponse<OrderResponse>> createOrder(@Body CreateOrderRequest request, @Query("status") boolean status);
@@ -148,6 +155,21 @@ public interface ApiService {
     Call<ApiResponse<CountResponse>> totalItemsQuantityByCustomerId(@Path("customerId") int customerId);
 
     // --------------------------------CONVERSATION-------------------------------------
+    // @GET("api/conversations")
+    // Call<ApiResponse<ConversationResponse>> getConversations();
+
+
+
+
+//    -------------------------------DASHBOARD--------------------------------------
+    @GET("/order/todays/count")
+    Call<ApiResponse<Long>> getTodaysOrderCount();
+
+    @GET("/order/pending/count")
+    Call<ApiResponse<Long>> getPendingOrdersCount();
+
+    @GET("/api/products/low-stock-count")
+    Call<Long> getLowStockCount(@Query("threshold") int threshold);
      @GET("api/conversations/list/{staffId}")
      Call<ApiResponse<List<ConversationResponse>>> getConversations(@Path("staffId") int id);
 

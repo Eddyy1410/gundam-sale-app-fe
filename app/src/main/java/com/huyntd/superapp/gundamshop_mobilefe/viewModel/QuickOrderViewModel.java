@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.huyntd.superapp.gundamshop_mobilefe.enums.OrderStatus;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.PageResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
@@ -24,12 +25,19 @@ public class QuickOrderViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> isLastPage = new MutableLiveData<>(false);
 
+    private final MutableLiveData<OrderResponse> orderDetail  = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+
     private int currentPage = 0;
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 2;
 
     public LiveData<List<OrderResponse>> getTodayOrders() { return todayOrders; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<Boolean> getIsLastPage() { return isLastPage; }
+
+    public LiveData<OrderResponse> getOrderDetail() {
+        return orderDetail;
+    }
 
     // ------------------ LOAD DATA ------------------
     public void loadTodayOrders(boolean refresh) {
@@ -43,9 +51,9 @@ public class QuickOrderViewModel extends ViewModel {
         orderRepository.getOrdersToday(
                 currentPage,
                 PAGE_SIZE,
-                "createdAt",
+                "orderDate",
                 "desc",
-                null,
+                "PENDING",
                 new OrderRepository.RepositoryCallback<ApiResponse<PageResponse<OrderResponse>>>() {
                     @Override
                     public void onSuccess(ApiResponse<PageResponse<OrderResponse>> result) {
@@ -94,6 +102,30 @@ public class QuickOrderViewModel extends ViewModel {
         if (Boolean.TRUE.equals(last) || Boolean.TRUE.equals(loading)) return;
         loadTodayOrders(false);
     }
+
+//    ------------------- UPDATE ORDER STATUS ------------------
+public void updateOrderStatus(int orderId, OrderStatus newStatus) {
+    isLoading.setValue(true);
+    System.out.println("🔄 Updating order ID " + orderId + " to status: " + newStatus.name());
+    // Gửi status lên server
+    orderRepository.updateOrderStatus(orderId, newStatus.name(), new OrderRepository.RepositoryCallback<OrderResponse>() {
+        @Override
+        public void onSuccess(OrderResponse result) {
+            isLoading.postValue(false);
+            // Cập nhật LiveData
+            orderDetail.postValue(result);
+            Log.d(TAG, "✅ Updated order status to: " + newStatus.name());
+        }
+
+        @Override
+        public void onError(String error) {
+            isLoading.postValue(false);
+            errorMessage.postValue(error);
+            Log.e(TAG, "🚨 Failed to update status: " + error);
+        }
+    });
+}
+
 
     // ------------------ REFRESH ------------------
     public void refresh() {

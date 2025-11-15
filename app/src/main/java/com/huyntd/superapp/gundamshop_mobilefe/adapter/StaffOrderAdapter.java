@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.activities.OrderDetailActivity;
+import com.huyntd.superapp.gundamshop_mobilefe.activities.OrderDetailStaffActivity;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderItemResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.OrderResponse;
 
@@ -65,22 +66,13 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.VH
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         OrderResponse item = list.get(position);
-
+        holder.tvName.setText("Mã đơn hàng" + String.valueOf(item.getId()));
         // 🧩 Lấy sản phẩm đầu tiên (nếu có)
         if (item.getOrderItems() != null && !item.getOrderItems().isEmpty()) {
             OrderItemResponse first = item.getOrderItems().get(0);
-            holder.tvName.setText(first.getProductName());
-            if (first.getProductImage() != null && !first.getProductImage().isEmpty()) {
-                Glide.with(context)
-                        .load(first.getProductImage())
-                        .override(300, 300)
-                        .centerCrop()
-                        .into(holder.img);
-            } else {
-                holder.img.setImageResource(R.drawable.no_image);
-            }
+//            holder.tvName.setText(first.getProductName());
         } else {
-            holder.tvName.setText("(Không có sản phẩm)");
+//            holder.tvName.setText("(Không có sản phẩm)");
             holder.img.setImageResource(R.drawable.no_image);
         }
 
@@ -105,12 +97,19 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.VH
         holder.tvStatus.setTextColor(color);
         holder.tvStatus.setBackground(bg);
 
-        holder.btnDetail.setOnClickListener(v -> {
-            if (listener != null) listener.onDetailClick(item);
+        holder.btnDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Gọi listener nếu cần (ví dụ để xử lý callback)
+                if (listener != null) {
+                    listener.onDetailClick(item);
+                }
 
-            Intent intent = new Intent(context, OrderDetailActivity.class);
-            intent.putExtra("orderId", item.getId());
-            context.startActivity(intent);
+                // Tạo Intent để mở OrderDetailStaffActivity
+                Intent intent = new Intent(v.getContext(), OrderDetailStaffActivity.class);
+                intent.putExtra("orderId", item.getId()); // truyền id của đơn hàng
+                v.getContext().startActivity(intent);
+            }
         });
     }
 
