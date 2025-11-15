@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartItemResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.repository.NotificationRepository;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -25,13 +26,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     private Context context;
     private OnCartItemListener listener;
     private DecimalFormat decimalFormat = new DecimalFormat("#,###");
+    private NotificationRepository notificationRepository;
 
     public interface OnCartItemListener {
         void onQuantityChanged(CartItemResponse item, int newQuantity);
         void onRemoveItem(CartItemResponse item);
     }
 
-    public CartAdapter(Context context) {
+    public CartAdapter(Context context, NotificationRepository notificationRepository) {
         this.context = context;
     }
 

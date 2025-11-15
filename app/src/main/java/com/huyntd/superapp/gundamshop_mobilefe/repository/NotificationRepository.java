@@ -1,16 +1,24 @@
 package com.huyntd.superapp.gundamshop_mobilefe.repository;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
+import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CountResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.api.ApiService;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.NotificationUtils;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.WebSocketService;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -27,22 +35,25 @@ import retrofit2.Response;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationRepository {
-
-
     ApiService apiService = ApiClient.getApiService();
 
     final AppStompClient stompClient;
     final String currentUserId;
+    final Context context;
 
     String TAG = "NOTIFICATION_REPO";
     Gson gson = new Gson();
 
+    //LiveData là một lớp trừu tượng (abstract class). Nó có các đặc điểm chính:
+    //Chỉ đọc (Read-only): Bạn không thể thay đổi giá trị của nó từ bên ngoài. Nó không có các phương thức public như setValue() hay postValue().
+    //MutableLiveData là một lớp con của LiveData. Nó kế thừa tất cả các đặc điểm của LiveData và thêm vào khả năng thay đổi giá trị.
     MutableLiveData<Integer> chatBadgeCount = new MutableLiveData<>(0);
+    MutableLiveData<Integer> cartBadgeCount = new MutableLiveData<>(0);
     MutableLiveData<String> generalNotification = new MutableLiveData<>();
 
     // --- CÁC PHƯƠNG THỨC LẤY DỮ LIỆU BAN ĐẦU (REST API) ---
 
-    public void fetchInitialBadgeCount() {
+    public void fetchInitialChatBadgeCount() {
         // TODO: Gọi API REST để tải số đếm ban đầu
         // Hiện tại: Giả định là 0
         // Sau khi API call thành công, gọi chatBadgeCount.postValue(result);
@@ -50,17 +61,38 @@ public class NotificationRepository {
             @Override
             public void onResponse(Call<ApiResponse<CountResponse>> call, Response<ApiResponse<CountResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.i(TAG, "onResponse: "+response);
+                    Log.i(TAG, "onResponse: "+response.body());
                     chatBadgeCount.postValue(response.body().getResult().getCount());
                 } else {
                     chatBadgeCount.postValue(-1);
-                    Log.e(TAG, "onResponse: "+response.body().getMessage());
+                    Log.e(TAG, "onResponse ChatBadge: "+response.body().getMessage());
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<CountResponse>> call, Throwable t) {
                 chatBadgeCount.postValue(-1);
+                Log.e(TAG, "onFailure: ", t);
+            }
+        });
+    }
+
+    public void fetchInitialCartBadgeCount() {
+        apiService.totalItemsQuantityByCustomerId(Integer.parseInt(currentUserId)).enqueue(new Callback<ApiResponse<CountResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<CountResponse>> call, Response<ApiResponse<CountResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i(TAG, "onResponse: "+response.body());
+                    cartBadgeCount.postValue(response.body().getResult().getCount());
+                } else {
+                    cartBadgeCount.postValue(-1);
+                    Log.e(TAG, "onResponse CartBadge: "+response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<CountResponse>> call, Throwable t) {
+                cartBadgeCount.postValue(-1);
                 Log.e(TAG, "onFailure: ", t);
             }
         });
@@ -78,15 +110,15 @@ public class NotificationRepository {
 
         // 1. Theo dõi Badge Count (Chat) từ Topic "/user/queue/unread-messages"
         // Lấy luồng dữ liệu thô từ AppStompClient
-        Disposable unreadMessageDisp = stompClient.getUnreadMessagesQueue()
+        Disposable unreadMessageDisp = stompClient.getCountingMessagesQueue()
                 // RxJava: Chuyển sang luồng background để xử lý JSON
                 .subscribeOn(Schedulers.io())
                 .subscribe(stompMessage -> {
                     try {
-                        Log.i(TAG, "Nhận được message từ /user/queue/unread-message");
+                        Log.i(TAG, "Nhận được message từ /user/queue/counting-messages");
                         String payload = stompMessage.getPayload();
                         CountResponse dto = gson.fromJson(payload, CountResponse.class);
-                        Log.i(TAG, "unread-message count listener: "+dto);
+                        Log.i(TAG, "counting-message listener: "+dto);
 
                         // Chỉ xử lý nếu là loại badge chat
                         if ("UNREAD_MESSAGE".equals(dto.getType())) {
@@ -94,12 +126,15 @@ public class NotificationRepository {
                             chatBadgeCount.postValue(dto.getCount());
                             Log.i(TAG, "Badge Count Updated via STOMP: " + dto.getType());
                         }
+                        if ("QUANTITY_CART".equals(dto.getType())) {
+                            cartBadgeCount.postValue(dto.getCount());
+                        }
                     } catch (Exception e) {
-                        Log.e(TAG, "Lỗi phân tích JSON UnreadCountDTO: ", e);
+                        Log.e(TAG, "Lỗi phân tích JSON DTO: ", e);
                     }
                 }, throwable -> {
                     // Xử lý lỗi khi subscribe hoặc nhận dữ liệu từ topic này
-                    Log.e(TAG, "Lỗi subscription /user/queue/unread-messages", throwable);
+                    Log.e(TAG, "Lỗi subscription /user/queue/counting-messages", throwable);
                 });
 
         // Lưu disposable vào chung với persistentDisposable của AppStompClient để quản lý
@@ -127,5 +162,28 @@ public class NotificationRepository {
 
     public LiveData<String> getGeneralNotification() {
         return generalNotification;
+    }
+
+    /**
+     * Hàm này sẽ cập nhật nội dung của thông báo chạy nền.
+     * @param newStatusText Nội dung trạng thái mới cần hiển thị.
+     */
+    public void updateForegroundNotificationStatus(String newStatusText) {
+        // 1. Lấy NotificationManager
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        // 2. Sử dụng NotificationUtils để xây dựng đối tượng Notification đã được cập nhật
+        android.app.Notification updatedNotification =
+                NotificationUtils.createForegroundServiceNotification(context, newStatusText);
+
+        // 3. Gọi notify() với CÙNG MỘT ID đã được dùng trong startForeground()
+        // Đây chính là bước thực hiện việc CẬP NHẬT
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // Nếu không có quyền, chúng ta không thể làm gì hơn ngoài việc ghi log và thoát.
+            // Việc XIN QUYỀN phải được thực hiện từ Activity.
+            Log.w("NotificationRepo", "POST_NOTIFICATIONS permission not granted. Cannot update notification.");
+            return;
+        }
+        notificationManager.notify(WebSocketService.NOTIFICATION_ID, updatedNotification);
     }
 }

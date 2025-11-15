@@ -24,6 +24,8 @@ import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
 import com.huyntd.superapp.gundamshop_mobilefe.adapter.CartAdapter;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartItemResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.repository.NotificationRepository;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
 import com.huyntd.superapp.gundamshop_mobilefe.viewModel.CartViewModel;
 
 import java.text.DecimalFormat;
@@ -46,11 +48,15 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
     private ProgressBar progressBar;
 
     private CartResponse currentCart;
+    private NotificationRepository notificationRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+        AppStompClient stompClient = AppStompClient.getInstance(SessionManager.getInstance(this).getAuthToken());
+        String userId = SessionManager.getInstance(this).getUserId();
+        notificationRepository = new NotificationRepository(stompClient, userId, this);
 
         // Đảm bảo layout tránh vùng camera và status bar
         View rootView = findViewById(R.id.main);
@@ -86,7 +92,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
     }
 
     private void setupRecyclerView() {
-        cartAdapter = new CartAdapter(this);
+        cartAdapter = new CartAdapter(this, notificationRepository);
         cartAdapter.setOnCartItemListener(this);
         rvCartItems.setLayoutManager(new LinearLayoutManager(this));
         rvCartItems.setAdapter(cartAdapter);

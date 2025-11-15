@@ -10,6 +10,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.api.ApiClient;
 import com.huyntd.superapp.gundamshop_mobilefe.models.request.UpdateCartRequest;
 import com.huyntd.superapp.gundamshop_mobilefe.models.response.CartResponse;
 import com.huyntd.superapp.gundamshop_mobilefe.models.ApiResponse;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.NotificationUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -85,6 +86,7 @@ public class CartRepository {
                             if (apiResponse.isSuccess()) {
                                 data.setValue(apiResponse.getResult());
                                 Log.d(TAG, "✅ Product added to cart successfully");
+
                             } else {
                                 data.setValue(false);
                                 Log.w(TAG, "⚠️ Failed to add product to cart: " + apiResponse.getMessage());

@@ -1,10 +1,16 @@
 package com.huyntd.superapp.gundamshop_mobilefe.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -29,6 +35,7 @@ import com.huyntd.superapp.gundamshop_mobilefe.fragments.PersonalInfoFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.DashboardFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.fragments.staff.QuickOrderFragment;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.AppStompClient;
+import com.huyntd.superapp.gundamshop_mobilefe.utils.NotificationUtils;
 import com.huyntd.superapp.gundamshop_mobilefe.utils.WebSocketService;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +47,20 @@ public class MainActivity extends AppCompatActivity {
     private String userRole;
 
     String TAG = "MAIN_ACTIVITY";
+
+    // 1. Khai báo một ActivityResultLauncher để xử lý kết quả xin quyền
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Người dùng đã cấp quyền. Bạn có thể tiếp tục các tác vụ liên quan đến thông báo.
+                    Toast.makeText(this, "Đã cấp quyền thông báo!", Toast.LENGTH_SHORT).show();
+                    // Ví dụ: khởi động WebSocketService của bạn ở đây nếu cần
+                } else {
+                    // Người dùng đã từ chối quyền.
+                    // Bạn nên hiển thị một thông báo giải thích tại sao bạn cần quyền này.
+                    Toast.makeText(this, "Bạn sẽ không nhận được thông báo tin nhắn mới.", Toast.LENGTH_LONG).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +94,25 @@ public class MainActivity extends AppCompatActivity {
 
             // BẮT ĐẦU SERVICE để nó quản lý việc kết nối và lắng nghe
             startWebSocketService();
+            NotificationUtils.createNotificationChannels(this);
+            askNotificationPermission();
 
             System.out.println("Start hereeeee");
             setupBottomNavigationForRole(userRole);
+        }
+    }
+
+    private void askNotificationPermission() {
+        // Chỉ áp dụng cho Android 13 (API 33) trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Kiểm tra xem quyền đã được cấp hay chưa
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // Quyền đã được cấp, không cần làm gì thêm.
+            } else {
+                // Quyền chưa được cấp, tiến hành hỏi người dùng.
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
         }
     }
 
@@ -235,17 +272,5 @@ public class MainActivity extends AppCompatActivity {
     public Context getApplicationContext() {
         return super.getApplicationContext();
     }
-
-//    private void showProductSearchFragment() {
-//        replaceFragment(new ProductSearchFragment(), "ProductSearchFragment");
-//    }
-//
-//    private void showConversationsFragment() {
-//        replaceFragment(new ConversationsFragment(), "ConversationsFragment");
-//    }
-//
-//    private void showNotificationsFragment() {
-//        replaceFragment(new NotificationsFragment(), "NotificationsFragment");
-//    }
 
 }

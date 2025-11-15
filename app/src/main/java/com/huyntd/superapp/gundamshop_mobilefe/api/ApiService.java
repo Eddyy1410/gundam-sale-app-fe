@@ -144,6 +144,9 @@ public interface ApiService {
     @DELETE("cart")
     Call<ApiResponse<Boolean>> removeFromCart(@Query("productId") int productId, @Query("userId") int userId);
 
+    @GET("cart/total-quantity/{customerId}")
+    Call<ApiResponse<CountResponse>> totalItemsQuantityByCustomerId(@Path("customerId") int customerId);
+
     // --------------------------------CONVERSATION-------------------------------------
      @GET("api/conversations/list/{staffId}")
      Call<ApiResponse<List<ConversationResponse>>> getConversations(@Path("staffId") int id);

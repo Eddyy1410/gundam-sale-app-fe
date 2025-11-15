@@ -164,7 +164,7 @@ public class ProductListFragment extends Fragment {
     // --- SETUP VÀ OBSERVE NOTIFICATION VIEWMODEL CHO BADGE ---
     private void setupBadgeViewModel() {
         // 1. Khởi tạo NotificationRepository (cần StompClient và UserId)
-        NotificationRepository notificationRepository = new NotificationRepository(stompClient, sessionManager.getUserId());
+        NotificationRepository notificationRepository = new NotificationRepository(stompClient, sessionManager.getUserId(), requireContext());
         NotificationViewModelFactory factory = new NotificationViewModelFactory(notificationRepository);
         notificationViewModel = new ViewModelProvider(this, factory).get(NotificationViewModel.class);
 
@@ -204,7 +204,7 @@ public class ProductListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        tvChatBadge.setVisibility(View.GONE);
+//        tvChatBadge.setVisibility(View.GONE);
     }
 
     @Override

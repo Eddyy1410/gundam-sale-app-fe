@@ -232,6 +232,12 @@ public class MapsFragment extends Fragment {
                             // Xóa đường cũ nếu có
                             map.getOverlays().removeIf(o -> o instanceof org.osmdroid.views.overlay.Polyline);
 
+                            // Xóa marker cũ nếu có
+                            if (destinationMarker != null) {
+                                map.getOverlays().remove(destinationMarker);
+                                destinationMarker = null;  // Đặt lại marker destinationMarker về null
+                            }
+
                             // Tạo polyline mới
                             org.osmdroid.views.overlay.Polyline line = new org.osmdroid.views.overlay.Polyline();
                             line.setPoints(geoPoints);

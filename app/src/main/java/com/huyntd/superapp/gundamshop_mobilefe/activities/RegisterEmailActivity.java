@@ -74,7 +74,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
         email = binding.emailEt.getText().toString();
         password = binding.passwordEt.getText().toString();
         cPassword = binding.cPasswordEt.getText().toString();
-        name = binding.phoneEt.getText().toString();
+        name = binding.nameEt.getText().toString();
         phone = binding.phoneEt.getText().toString();
 
         Log.d(TAG, "validateData: Email:"+email);

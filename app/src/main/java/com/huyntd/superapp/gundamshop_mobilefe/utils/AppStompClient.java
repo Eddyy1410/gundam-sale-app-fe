@@ -27,7 +27,7 @@ public class AppStompClient {
     private static AppStompClient instance;
     static final String TAG = "CHAT_STOMP_CLIENT";
     final String jwtToken;
-    final String serverUrl = "ws://172.20.10.8:8080/ws-native";
+    final String serverUrl = "ws://172.20.10.5:8080/ws-native";
 
     // Phải thêm maven { url = uri("https://jitpack.io") } trong settings.gradle.kts (Project Settings)
     // dependencyResolutionManagement {
@@ -160,8 +160,8 @@ public class AppStompClient {
         return stompClient.topic("/user/queue/notifications");
     }
 
-    public Flowable<StompMessage> getUnreadMessagesQueue() {
-        return stompClient.topic("/user/queue/unread-messages");
+    public Flowable<StompMessage> getCountingMessagesQueue() {
+        return stompClient.topic("/user/queue/counting-messages");
     }
 
     public Flowable<StompMessage> getMessagesQueue() {

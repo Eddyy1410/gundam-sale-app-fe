@@ -6,11 +6,14 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.Observer;
 
 import com.huyntd.superapp.gundamshop_mobilefe.R;
 import com.huyntd.superapp.gundamshop_mobilefe.SessionManager;
@@ -24,12 +27,14 @@ import io.reactivex.disposables.Disposable;
 public class WebSocketService extends Service {
 
     private static final String TAG = "WEBSOCKET_SERVICE";
-    private static final int NOTIFICATION_ID = 101;
-    private static final String CHANNEL_ID = "WEBSOCKET_CHANNEL";
+    // Chuyển từ private thành public để các lớp khác có thể truy cập
+    public static final int NOTIFICATION_ID = 101;
+    private static final String CHANNEL_ID = "FOREGROUND_SERVICE_CHANNEL_ID";
 
     private AppStompClient stompClient;
     private CompositeDisposable disposables = new CompositeDisposable();
     private NotificationRepository notificationRepository;
+    private Observer<Integer> cartBadgeObserver;
 
     private final ApiService apiService = ApiClient.getApiService();
 
@@ -56,7 +61,7 @@ public class WebSocketService extends Service {
         stompClient = AppStompClient.getInstance(token);
 
         // Khởi tạo Repository
-        notificationRepository = new NotificationRepository(stompClient, userId);
+        notificationRepository = new NotificationRepository(stompClient, userId, this);
     }
 
     @SuppressLint("ForegroundServiceType")
@@ -76,7 +81,10 @@ public class WebSocketService extends Service {
                         switch (lifecycleEvent.getType()) {
                             case OPENED:
                                 Log.i(TAG, "STOMP Connection Opened!");
+                                // Yêu cầu Repository cập nhật trạng thái
                                 notificationRepository.startListeningForPersistenQueues();
+                                notificationRepository.fetchInitialCartBadgeCount();
+                                startObservingCartBadge();
                                 break;
                             case ERROR:
                                 Log.e(TAG, "STOMP Connection Error: " + lifecycleEvent.getException().getMessage());
@@ -102,20 +110,47 @@ public class WebSocketService extends Service {
 
     private android.app.Notification createNotification() {
         // ... (Giữ nguyên logic tạo Foreground Notification)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, "Chat Background Service", NotificationManager.IMPORTANCE_LOW
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
+        // Điều này đảm bảo rằng mã tạo kênh thông báo chỉ chạy trên Android 8.0 (Oreo) trở lên, vì Notification Channels được giới thiệu từ API cấp 26.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel(
+//                    CHANNEL_ID, "Chat Background Service", NotificationManager.IMPORTANCE_LOW
+//            );
+//            NotificationManager manager = getSystemService(NotificationManager.class);
+//            manager.createNotificationChannel(channel);
+//        }
+//
+//        return new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setContentTitle("Dịch vụ chat đang chạy")
+//                .setContentText("Đang chờ tin nhắn mới...")
+//                .setSmallIcon(R.drawable.ic_nav_chat)
+//                .setPriority(NotificationCompat.PRIORITY_MAX)
+//                .build();
+        return NotificationUtils.createForegroundServiceNotification(this);
+    }
 
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Dịch vụ chat đang chạy")
-                .setContentText("Đang chờ tin nhắn mới...")
-                .setSmallIcon(R.drawable.ic_nav_chat)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
+    /**
+     * Phương thức này sẽ lắng nghe sự thay đổi của LiveData cartBadgeCount
+     * và cập nhật Foreground Notification.
+     */
+    private void startObservingCartBadge() {
+        // Tránh tạo observer nhiều lần
+        if (cartBadgeObserver != null) return;
+
+        cartBadgeObserver = cartQuantity -> {
+            Log.i(TAG, "Service observed cartQuantity change: " + cartQuantity);
+            if (cartQuantity != null && cartQuantity > -1) {
+                String statusText = "Bạn đang có " + cartQuantity + " sản phẩm trong giỏ hàng";
+                notificationRepository.updateForegroundNotificationStatus(statusText);
+            } else {
+                // Nếu muốn, bạn có thể reset lại text khi giỏ hàng trống
+                notificationRepository.updateForegroundNotificationStatus("Đang chờ tin nhắn mới...");
+            }
+        };
+
+        // LiveData cần được observe trên Main Thread
+        new Handler(Looper.getMainLooper()).post(() -> {
+            notificationRepository.getCartBadgeCount().observeForever(cartBadgeObserver);
+        });
     }
 
 //    @Override
